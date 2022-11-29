@@ -26,26 +26,19 @@ public:
   void DeleteVectors();
   void ResetVectors();
 
-  float H_chi2() const { return m_H_chi2;}
-  float Z1_chi2() const { return m_Z1_chi2;}
-  float Z2_chi2() const { return m_Z2_chi2;}
-  float HZZ_chi2() const { return m_HZZ_chi2;}
-  int eventCategory() const { return m_eventCategory;}
-
-  void set_H_chi2(float x) { m_H_chi2 = x;}
-  void set_Z1_chi2(float x) { m_Z1_chi2 = x;}
-  void set_Z2_chi2(float x) { m_Z2_chi2 = x;}
-  void set_HZZ_chi2(float x) { m_HZZ_chi2 = x;}
-  void set_eventCategory(int x) { m_eventCategory = x;}
+  std::string eventCategory() const { return m_eventCategory;}
+  void set_eventCategory(std::string x) { m_eventCategory = x;}
 
   vector<Muon>* H_muons;
   vector<Electron>* H_electrons;
   vector<FlavorParticle>* H_leptons;
   vector<TLorentzVector>* reco_Z_bosons;
   vector<TLorentzVector>* reco_H_bosons;
+  vector<float>* H_chi2;
+  vector<float>* Z1_chi2;
+  vector<float>* Z2_chi2;
+  vector<float>* HZZ_chi2;
 
 protected:
-
-  float m_H_chi2, m_Z1_chi2, m_Z2_chi2, m_HZZ_chi2;
-  int m_eventCategory;
+  std::string m_eventCategory;
 };

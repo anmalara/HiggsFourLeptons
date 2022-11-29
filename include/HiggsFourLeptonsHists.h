@@ -17,4 +17,8 @@ public:
   // Main functions
   void fill(const HiggsFourLeptonsEvent & event);
 
+
+private:
+  int max_index;
+
 };

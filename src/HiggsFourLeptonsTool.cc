@@ -11,6 +11,7 @@
 #include "LEAF/Analyzer/include/TauIds.h"
 #include "LEAF/Analyzer/include/NJetSelection.h"
 #include "LEAF/Analyzer/include/NTauSelection.h"
+#include "LEAF/Analyzer/include/FlagSelection.h"
 #include "LEAF/Analyzer/include/LumiWeightApplicator.h"
 
 #include "LEAF/HiggsFourLeptons/include/Utils.h"
@@ -40,9 +41,8 @@ private:
   HiggsFourLeptonsEvent* event;
 
   string NameTool = "HiggsFourLeptonsTool";
-  vector<string> histogram_tags = {"input", "weights", "notau_Selection",
-  "NObject_Selection", "phasespace_Selection", "Higgs4LeptonsReco", "Higgs4Leptons_Selection",
-  "nominal"};
+  vector<string> histogram_tags = {"input", "weights", "triggers",
+  "notau_Selection", "Higgs4LeptonsReco", "Higgs4Leptons_Selection", "nominal"};
 
   unordered_map<string, string> input_strings;
   unordered_map<string, bool> input_bools;
@@ -58,29 +58,35 @@ private:
   unique_ptr<NJetSelection> njets_selection;
   unique_ptr<NTauSelection> ntaus_selection;
   unique_ptr<Higgs4LeptonsFinder> Higgs4Leptons_finder;
+
+  unordered_map<string, unique_ptr<FlagSelection>> Trigger_selection;
 };
 
 
 void HiggsFourLeptonsTool::PrintInputs() {
   cout << blue << string(40, '*' ) << reset << endl;
   PrintHeader(NameTool);
-  for (auto x : input_strings) cout << x.first << string( 18-x.first.size(), ' ' ) << x.second << '\n';
-  for (auto x : input_bools)   cout << x.first << string( 18-x.first.size(), ' ' ) << BoolToTString(x.second) << '\n';
+  for (auto x : input_strings) cout << blue << x.first << string( 18-x.first.size(), ' ' ) << x.second << '\n';
+  for (auto x : input_bools)   cout << blue << x.first << string( 18-x.first.size(), ' ' ) << BoolToTString(x.second) << '\n';
   cout << blue << string(40, '*' ) << reset << endl;
 }
 
 void HiggsFourLeptonsTool::book_histograms(){
   for(const TString & tag : histogram_tags){
     TString mytag;
-    mytag = tag+"_Jets"; book_HistFolder(mytag, new JetHists(mytag));
-    mytag = tag+"_H4l";  book_HistFolder(mytag, new HiggsFourLeptonsHists(mytag));
+    mytag = tag+"_Jets";      book_HistFolder(mytag, new ElectronHists(mytag));
+    mytag = tag+"_Muons";     book_HistFolder(mytag, new MuonHists(mytag));
+    mytag = tag+"_Electrons"; book_HistFolder(mytag, new JetHists(mytag));
+    mytag = tag+"_H4l";       book_HistFolder(mytag, new HiggsFourLeptonsHists(mytag));
   }
 }
 
 void HiggsFourLeptonsTool::fill_histograms(TString tag){
   TString mytag;
-  mytag = tag+"_Jets";   HistFolder<JetHists>(mytag)->fill(*event);
-  mytag = tag+"_H4l";    HistFolder<HiggsFourLeptonsHists>(mytag)->fill(*event);
+  mytag = tag+"_Jets";      HistFolder<ElectronHists>(mytag)->fill(*event);
+  mytag = tag+"_Muons";     HistFolder<MuonHists>(mytag)->fill(*event);
+  mytag = tag+"_Electrons"; HistFolder<JetHists>(mytag)->fill(*event);
+  mytag = tag+"_H4l";       HistFolder<HiggsFourLeptonsHists>(mytag)->fill(*event);
 
 }
 
@@ -88,21 +94,27 @@ void HiggsFourLeptonsTool::fill_histograms(TString tag){
 
 HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
 
+  input_strings["name"] = cfg.dataset_name();
+  input_strings["type"] = cfg.dataset_type();
+  input_strings["year"] = cfg.dataset_year();
+  PrintInputs();
+
   event = new HiggsFourLeptonsEvent();
   event->reset();
 
   lumiweight_applicator.reset(new LumiWeightApplicator(cfg));
 
-  MultiID<Muon> muon_id_base = {PtEtaId(3, 2.5)};
-  MultiID<Electron> electron_id_base = {PtEtaId(5, 2.5), ElectronDetectorHolesID()};
-  MultiID<Muon> muo_id = {muon_id_base, MuonID(Muon::IDCutBasedLoose), MuonID(Muon::IsoPFLoose)};
-  MultiID<Electron> ele_id = {electron_id_base, ElectronID(Electron::IDMVAIsoLoose)};
+  MultiID<Muon> muo_ID = {PtEtaId(muo_pt_min, muo_eta_min), MuonID(muo_id), MuonID(muo_iso)};
+  MultiID<Electron> ele_ID = {PtEtaId(ele_pt_min, ele_eta_min), ElectronDetectorHolesID(), ElectronID(ele_id)};
 
-  muo_cleaner.reset(new MuonCleaner(muo_id));
-  ele_cleaner.reset(new ElectronCleaner(ele_id));
+  muo_cleaner.reset(new MuonCleaner(muo_ID));
+  ele_cleaner.reset(new ElectronCleaner(ele_ID));
 
-  MultiID<Jet> jet_id = {PtEtaId(20, 5.2), JetID(JetID::WP_TIGHT), JetPUID(JetPUID::WP_TIGHT), JetLeptonOverlapID(0.4)};
+  MultiID<Jet> jet_id = {PtEtaId(jet_pt_min,jet_eta_min), JetID(JetID::WP_TIGHT), JetPUID(JetPUID::WP_TIGHT), JetLeptonOverlapID(0.4)};
   jet_cleaner.reset(new JetCleaner(jet_id));
+
+  MultiID<Tau> tau_id = {TauID(Tau::DeepTauVsJetVVVLoose), TauID(Tau::DeepTauVsEleVVVLoose), TauID(Tau::DeepTauVsMuVLoose)};
+  tau_cleaner.reset(new TauCleaner(tau_id));
 
   MultiID<PFCandidate> pfcand_id = {PtEtaId(0.2, 5.2)};
   pfcand_cleaner.reset(new PFCandCleaner(pfcand_id));
@@ -110,11 +122,14 @@ HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
   njets_selection.reset(new NJetSelection(cfg, 1, -1));
   ntaus_selection.reset(new NTauSelection(cfg, -1, 0));
 
-
   Higgs4Leptons_finder.reset(new Higgs4LeptonsFinder(cfg));
 
+  for (auto& t : Trigger_run_validity.at(input_strings["year"])) {
+    if (input_strings["type"]=="DATA" && !FindInString(t.second.first,input_strings["name"])) continue;
+    Trigger_selection[t.first].reset(new FlagSelection(cfg, t.first ));
+  }
+
   book_histograms();
-  PrintInputs();
 }
 
 
@@ -146,6 +161,16 @@ bool HiggsFourLeptonsTool::Process(){
 
   lumiweight_applicator->process(*event);
   fill_histograms("weights");
+
+  bool pass_triggers_OR = false;
+  for (auto& el : Trigger_selection) {
+    // if (event.isRealData && (event.run < Trigger_run_validity.at(input_strings["year"]).at(el.first).first || event.run > Trigger_run_validity.at(input_strings["year"]).at(el.first).second) ) continue;
+    pass_triggers_OR += el.second->passes(*event);
+    if (pass_triggers_OR) break;
+  }
+  if (!pass_triggers_OR) return false;
+
+  fill_histograms("triggers");
 
   clean_objects();
   if(!ntaus_selection->passes(*event)) return false;

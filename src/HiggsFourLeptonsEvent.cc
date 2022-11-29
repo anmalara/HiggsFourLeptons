@@ -10,15 +10,15 @@ void HiggsFourLeptonsEvent::SetNewVectors(){
   H_leptons = new vector<FlavorParticle>;
   reco_Z_bosons = new vector<TLorentzVector>;
   reco_H_bosons = new vector<TLorentzVector>;
+  H_chi2 = new std::vector<float>;
+  Z1_chi2 = new std::vector<float>;
+  Z2_chi2 = new std::vector<float>;
+  HZZ_chi2 = new std::vector<float>;
 }
 
 
 void HiggsFourLeptonsEvent::SetNewScalars(){
-  m_H_chi2 = -1;
-  m_Z1_chi2 = -1;
-  m_Z2_chi2 = -1;
-  m_HZZ_chi2 = -1;
-  m_eventCategory = -1;
+  m_eventCategory = "undefined";
 }
 
 void HiggsFourLeptonsEvent::DeleteVectors(){
@@ -27,6 +27,10 @@ void HiggsFourLeptonsEvent::DeleteVectors(){
   delete H_leptons;
   delete reco_Z_bosons;
   delete reco_H_bosons;
+  delete H_chi2;
+  delete Z1_chi2;
+  delete Z2_chi2;
+  delete HZZ_chi2;
 }
 
 void HiggsFourLeptonsEvent::ResetVectors(){
@@ -35,6 +39,10 @@ void HiggsFourLeptonsEvent::ResetVectors(){
   H_leptons = 0;
   reco_Z_bosons = 0;
   reco_H_bosons = 0;
+  H_chi2 = 0;
+  Z1_chi2 = 0;
+  Z2_chi2 = 0;
+  HZZ_chi2 = 0;
 }
 
 
