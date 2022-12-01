@@ -21,7 +21,7 @@
     <Dataset Name="EGamma_RunA_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunB_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunC_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
-    <!-- <Dataset Name="EGamma_RunD_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset> -->
+    <Dataset Name="EGamma_RunD_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunA_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunB_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunC_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>

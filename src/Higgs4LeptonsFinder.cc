@@ -54,7 +54,8 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
     bool is_ele_1 = lep_bool.at(i_1);
     if (is_ele_1) lep_1 = (*event.electrons).at(index_1);
     else lep_1 = (*event.muons).at(index_1);
-    for(size_t i_2=i_1+1; i_2<lep_indices.size(); i_2++){
+    for(size_t i_2=0; i_2<lep_indices.size(); i_2++){
+      if (i_2!=i_1) continue;
       bool is_ele_2 = lep_bool.at(i_2);
       if (is_ele_1!=is_ele_2) continue;
       int index_2 = lep_indices.at(i_2);
@@ -63,14 +64,14 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
       else lep_2 = (*event.muons).at(index_2);
       if (lep_1.charge()==lep_2.charge()) continue;
       for(size_t i_3=0; i_3<lep_indices.size(); i_3++){
-        if (i_1==i_3 || i_2==i_3) continue;
+        if (i_3==i_1 || i_3==i_2) continue;
         int index_3 = lep_indices.at(i_3);
         FlavorParticle lep_3;
         bool is_ele_3 = lep_bool.at(i_3);
         if (is_ele_3) lep_3 = (*event.electrons).at(index_3);
         else lep_3 = (*event.muons).at(index_3);
-        for(size_t i_4=i_3+1; i_4<lep_indices.size(); i_4++){
-          if (i_1==i_4 || i_2==i_4) continue;
+        for(size_t i_4=0; i_4<lep_indices.size(); i_4++){
+          if (i_4==i_1 || i_4==i_2 || i_4==i_3) continue;
           bool is_ele_4 = lep_bool.at(i_4);
           if (is_ele_3!=is_ele_4) continue;
           int index_4 = lep_indices.at(i_4);
@@ -84,6 +85,8 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
           TLorentzVector z1 = lep_1.p4()+lep_2.p4();
           if (Fail_ZMassMin(z1)) continue;
           TLorentzVector z2 = lep_3.p4()+lep_4.p4();
+          if (Fail_ZMassMin(z2)) continue;
+          if (z1.M()<z2.M()) continue;
           if (Fail_SmartCut(z1,z2)) continue;
           TLorentzVector h = lep_1.p4()+lep_2.p4()+lep_3.p4()+lep_4.p4();
           float chi2_z1 = fabs(z1.M()-Z_mass_reco)/Z_width_reco;

@@ -11,8 +11,8 @@ def Add_Signals_VBF(SampleContainer):
         'UL18': '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL17':{'xsecs': 1.044, 'das':499000,    'generated':94612.0,    'weighted':6*372396.47124},
-        'UL18':{'xsecs': 1.044, 'das':477000,    'generated':80768.0,    'weighted':6*317889.81546},
+        'UL17':{'xsecs': 1.044, 'das':499000,    'generated':94612.0,    'weighted':1963554.94},
+        'UL18':{'xsecs': 1.044, 'das':477000,    'generated':80768.0,    'weighted':317889.81546/6},
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -23,8 +23,8 @@ def Add_Signals_GluGlu(SampleContainer):
         'UL18': '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM',
         }
     nevents_das={
-        'UL17':{'xsecs': 12.18, 'das':998000,    'generated':167943.0,   'weighted':6*4889914.9177},
-        'UL18':{'xsecs': 12.18, 'das':940000,    'generated':153857.0,   'weighted':6*4477013.0119},
+        'UL17':{'xsecs': 12.18, 'das':998000,    'generated':167943.0,   'weighted':28814100.5},
+        'UL18':{'xsecs': 12.18, 'das':940000,    'generated':153857.0,   'weighted':6.4*4477013.0119},
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -36,7 +36,7 @@ def Add_DY(SampleContainer):
         'UL18': '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL17':{'xsecs': 6104000, 'das':196329377, 'generated':125741.0,   'weighted':1500*2080891944.11},
+        'UL17':{'xsecs': 6104000, 'das':196329377, 'generated':125741.0,   'weighted':3336547208000},
         'UL18':{'xsecs': 6104000, 'das':196626007, 'generated':124604.0,   'weighted':1500*2057349927.78},
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
@@ -47,7 +47,7 @@ def Add_DY(SampleContainer):
         'UL18': '/DYJetsToLL_M-10to50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL17':{'xsecs': 18610000, 'das':68480179,  'generated':7018.0,     'weighted':9800*7018.0},
+        'UL17':{'xsecs': 18610000, 'das':68480179,  'generated':7018.0,     'weighted':68395868},
         'UL18':{'xsecs': 18610000, 'das':99177236,  'generated':10104.0,    'weighted':9800*332658520.776},
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
@@ -60,7 +60,7 @@ def Add_Diboson(SampleContainer):
         'UL18': '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL17':{'xsecs': 1256, 'das':99388000,  'generated':5286759.0,  'weighted':20*7026087.3928},
+        'UL17':{'xsecs': 1256, 'das':99388000,  'generated':5286759.0,  'weighted':131669255},
         'UL18':{'xsecs': 1256, 'das':99191000,  'generated':5209228.0,  'weighted':20*6924699.5776},
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
@@ -110,7 +110,7 @@ def Add_Data_DoubleMuon(SampleContainer):
     sample_name = 'DoubleMuon'
     nevents_das={
         'UL17':{'das':       {              'B':14501767, 'C':49636525, 'D':23075733, 'E':51531477, 'F':79756560},
-                'generated': {              'B':33386,    'C':64079,    'D':30531,    'E':126945,   'F':79756560},
+                'generated': {              'B':33386,    'C':64079,    'D':30531,    'E':126945,   'F':238266},
                 },
         'UL18':{'das':       {'A':241596817,  'B':119918017, 'C':110032072,  'D':513884680,},
                 'generated': {'A':85068,      'B':39157,     'C':36578,      'D':146787,},

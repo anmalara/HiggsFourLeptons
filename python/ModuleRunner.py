@@ -61,9 +61,11 @@ class ModuleRunner(VariablesBase):
         # self.RunAnalyser(options='p')
 
     def RunLocal(self,ncores=4, run_on_samples=[]):
-        import glob, sys
+        import glob
         if not ncores:
             ncores = self.ncores
+        if len(run_on_samples)==0:
+            run_on_samples = ['']
         print(green('--> Locally running jobs on %i cores' % (ncores)))
         commands = []
         path = os.path.join(self.config_path, 'workdir_'+self.ModuleName)
@@ -76,12 +78,36 @@ class ModuleRunner(VariablesBase):
         parallelize(commands, ncores=ncores, cwd=True)
         print(green('--> Finished running missing jobs locally.'))
 
+    def MergeGroups(self):
+        commands = []
+        for year in self.years:
+            dir = os.path.join(self.analysis_outpath,year,self.ModuleName)
+            for group, info in self.groups.items():
+                type, samples = info
+                new_file = os.path.join(dir,type+'__'+group+self.PrefixrootFile+year+'.root')
+                command = ['hadd', '-f', new_file]
+                for sample in samples:
+                    if type=='DATA':
+                        for run in self.RunPeriods_Dict[year]:
+                            fname = new_file.replace(group,sample+'_Run'+run)
+                            if os.path.exists(fname):
+                                command.append(fname)
+                    else:
+                        fname = new_file.replace(group,sample)
+                        if os.path.exists(fname):
+                            command.append(fname)
+                if len(command)==4:
+                    command = ['cp',command[-1],command[2]]
+                commands.append(command)
+        parallelize(commands, ncores=4, remove_temp_files=False)
+
     def MergeRunII(self):
         runII_dir = os.path.join(self.analysis_outpath,'RunII',self.ModuleName)
         ensureDirectory(runII_dir)
         commands = []
-        for group, samples in self.groups.items():
+        for group, info in self.groups.items():
             for sample in samples:
+                type, samples = info
                 # for mode in ['','_standard_RunII']:
                 for mode in ['_standard_RunII']:
                     new_file = os.path.join(runII_dir,'MC__'+sample+mode+'.root')

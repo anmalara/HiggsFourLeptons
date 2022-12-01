@@ -25,8 +25,19 @@ HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
     book<TH1F>(name+"_pt",       ";p_{T,"+name+"}; Events / bin",        100,       0.,    500);
     book<TH1F>(name+"_eta",      ";#eta_{"+name+"}; Events / bin",       100,      -5.0,     5.0);
     book<TH1F>(name+"_phi",      ";#phi_{"+name+"}; Events / bin",       100,      -4.0,     4.0);
-    book<TH1F>(name+"_mass",     ";mass_{"+name+"}; Events / bin",        50,      70,     170.0);
-    book<TH1F>(name+"_mass_ext", ";mass_{"+name+"}; Events / bin",       100,     170,    1170.0);
+    if (FindInString("H", name.Data())){
+      book<TH1F>(name+"_mass",    ";mass_{"+name+"}; Events / bin",       50,      70,     170.0);
+      book<TH1F>(name+"_mass_ext",";mass_{"+name+"}; Events / bin",      100,     170,    1170.0);
+      book<TH1F>(name+"_mass_inc",";mass_{"+name+"}; Events / bin",      275,      70,    1170.0);
+    } else {
+      book<TH1F>(name+"_mass",   ";mass_{"+name+"}; Events / bin",        26,       0,     130.0);
+    }
+    if (FindInString("Z1",name.Data())){
+      book<TH2F>("Z1vsZ2_pt",    ";p_{T,Z_1};p_{T,Z_2}",                 100,       0.,    500,   100,       0.,    500);
+      book<TH2F>("Z1vsZ2_eta",   ";#eta_{Z_1};#eta_{,Z_2}",              100,      -5.0,     5.0, 100,      -5.0,     5.0);
+      book<TH2F>("Z1vsZ2_phi",   ";#phi_{Z_1};#phi_{,Z_2}",              100,      -4.0,     4.0, 100,      -4.0,     4.0);
+      book<TH2F>("Z1vsZ2_mass",  ";mass_{Z_1};mass_{,Z_2}",               26,       0,     130.0,  26,       0,     130.0);
+    }
   }
 
   max_index = 5;
@@ -34,12 +45,12 @@ HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
     TString name;
     for(int i=1; i<=max_index; i++){
       name = lep+to_string(i);
-      book<TH1F>(name+"_pt",       ";#p_{T, "+name+"}; Events / bin",    100,       0.,    500/i);
+      book<TH1F>(name+"_pt",       ";p_{T, "+name+"}; Events / bin",     100,       0.,    500/i);
       book<TH1F>(name+"_eta",      ";#eta_{"+name+"}; Events / bin",     100,      -5.0,     5.0);
       book<TH1F>(name+"_phi",      ";#phi_{"+name+"}; Events / bin",     100,      -4.0,     4.0);
     }
     name = lep+"1vs"+lep+"2";
-    book<TH2F>(name+"_pt",          ";#p_{T,"+lep+"1};#p_{T,"+lep+"2}",   50,       0.,   1000,     50,       0.,  1000);
+    book<TH2F>(name+"_pt",          ";p_{T,"+lep+"1};p_{T,"+lep+"2}",    50,       0.,   1000,     50,       0.,  1000);
     book<TH2F>(name+"_eta",         ";#eta_{"+lep+"1};#eta_{"+lep+"2}",  100,      -5.0,     5.0,  100,      -5.0,    5.0);
     book<TH2F>(name+"_eta_abs",     ";#eta_{"+lep+"1};#eta_{"+lep+"2}",  100,      -0.0,     5.0,  100,      -0.0,    5.0);
   }
@@ -72,7 +83,13 @@ void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
     hist<TH1F>(name+"_eta")->Fill(boson.Eta(), weight);
     hist<TH1F>(name+"_phi")->Fill(boson.Phi(), weight);
     hist<TH1F>(name+"_mass")->Fill(boson.M(), weight);
-    hist<TH1F>(name+"_mass_ext")->Fill(boson.M(), weight);
+    if (i==1){
+      TLorentzVector boson1 = (*event.reco_Z_bosons).at(0);
+      hist<TH2F>("Z1vsZ2_pt")->Fill(boson1.Pt(), boson.Pt(), weight);
+      hist<TH2F>("Z1vsZ2_eta")->Fill(boson1.Eta(), boson.Eta(), weight);
+      hist<TH2F>("Z1vsZ2_phi")->Fill(boson1.Phi(), boson.Phi(), weight);
+      hist<TH2F>("Z1vsZ2_mass")->Fill(boson1.M(), boson.M(), weight);
+    }
   }
 
   for(int i=0; i<H_size; i++){
@@ -83,6 +100,8 @@ void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
     hist<TH1F>(name+"_phi")->Fill(boson.Phi(), weight);
     hist<TH1F>(name+"_mass")->Fill(boson.M(), weight);
     hist<TH1F>(name+"_mass_ext")->Fill(boson.M(), weight);
+    hist<TH1F>(name+"_mass_inc")->Fill(boson.M(), weight);
+
   }
 
   for(int i=0; i<ele_size; i++){

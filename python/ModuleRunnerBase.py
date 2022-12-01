@@ -29,17 +29,12 @@ class VariablesBase(GenericPath):
     ''' Class container for list of objects '''
     def __init__(self):
         GenericPath.__init__(self)
-        self.PrefixrootFile     = 'uhh2.AnalysisModuleRunner.'
-        self.Channels           = ['mm','ee','em']
+        self.PrefixrootFile     = '_standard_'
         self.Systematics        = ['nominal']
         self.Systematics_Scale  = []
         # self.SignalSamples      = [self.Signal+mode+'_M'+str(mass) for mass in self.MassPoints for mode in ['','_inv']]
-        self.RunPeriods_Dict    = {'UL16preVFP': ['B', 'C', 'D', 'E', 'Fearly'],
-                                   'UL16preVFP': ['Flate', 'G', 'H'],
-                                   'UL17': ['B', 'C', 'D', 'E', 'F'],
-                                   'UL18': ['A', 'B', 'C', 'D'],
-                                   }
-        self.years              = sorted(self.RunPeriods_Dict.keys())
+        self.RunPeriods_Dict    = OrderedDict([(year, list(runs)) for year, runs in ROOT.Year2Run])
+        self.years              = self.RunPeriods_Dict.keys()
         self.AllRunPeriods      = list(set(itertools.chain.from_iterable(self.RunPeriods_Dict.values())))
         self.defineGroups()
     #
@@ -50,12 +45,13 @@ class VariablesBase(GenericPath):
     #     return None
 
     def defineGroups(self):
-        self.groups = OrderedDict()
-        # self.groups.setdefault('VBF',['VBF_HToZZTo4L_M125'])
-        # self.groups.setdefault('GluGlu',['GluGluHToZZTo4L_M125'])
-        # self.groups.setdefault('DY',['DYJetsToLL_M-50','DYJetsToLL_M-10to50'])
-        # self.groups.setdefault('VV',['ZZTo4L'])
-
+        self.groups = OrderedDict([
+            ('DY',   ('MC',   ['DYJetsToLL_M-50','DYJetsToLL_M-10to50'])),
+            ('VV',   ('MC',   ['ZZTo4L'])),
+            ('ggH',  ('MC',   ['GluGluHToZZTo4L_M125'])),
+            ('VBF',  ('MC',   ['VBF_HToZZTo4L_M125'])),
+            ('Data', ('DATA', ['EGamma','SingleMuon','DoubleMuon','MuonEG'])),
+        ])
     # def defineType(self):
     #     self.groups = OrderedDict()
     #     for year in self.RunPeriods_Dict:

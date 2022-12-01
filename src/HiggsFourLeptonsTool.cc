@@ -4,13 +4,12 @@
 #include "LEAF/Analyzer/include/JetHists.h"
 #include "LEAF/Analyzer/include/MuonHists.h"
 #include "LEAF/Analyzer/include/ElectronHists.h"
-#include "LEAF/Analyzer/include/TauHists.h"
 #include "LEAF/Analyzer/include/JetIds.h"
 #include "LEAF/Analyzer/include/MuonIds.h"
 #include "LEAF/Analyzer/include/ElectronIds.h"
-#include "LEAF/Analyzer/include/TauIds.h"
+#include "LEAF/Analyzer/include/NElectronSelection.h"
+#include "LEAF/Analyzer/include/NMuonSelection.h"
 #include "LEAF/Analyzer/include/NJetSelection.h"
-#include "LEAF/Analyzer/include/NTauSelection.h"
 #include "LEAF/Analyzer/include/FlagSelection.h"
 #include "LEAF/Analyzer/include/LumiWeightApplicator.h"
 
@@ -41,8 +40,8 @@ private:
   HiggsFourLeptonsEvent* event;
 
   string NameTool = "HiggsFourLeptonsTool";
-  vector<string> histogram_tags = {"input", "weights", "triggers",
-  "notau_Selection", "Higgs4LeptonsReco", "Higgs4Leptons_Selection", "nominal"};
+  vector<string> histogram_tags = {"input", "weights", "triggers", "clean",
+  "Higgs4LeptonsReco", "Higgs4Leptons_Selection", "nominal"};
 
   unordered_map<string, string> input_strings;
   unordered_map<string, bool> input_bools;
@@ -50,13 +49,13 @@ private:
   unique_ptr<LumiWeightApplicator> lumiweight_applicator;
   unique_ptr<MuonCleaner> muo_cleaner;
   unique_ptr<ElectronCleaner> ele_cleaner;
-  unique_ptr<TauCleaner> tau_cleaner;
   unique_ptr<JetCleaner> jet_cleaner;
   unique_ptr<PFCandCleaner> pfcand_cleaner;
 
   // Selections used in the analysis
+  unique_ptr<NElectronSelection> nele_selection;
+  unique_ptr<NMuonSelection> nmuo_selection;
   unique_ptr<NJetSelection> njets_selection;
-  unique_ptr<NTauSelection> ntaus_selection;
   unique_ptr<Higgs4LeptonsFinder> Higgs4Leptons_finder;
 
   unordered_map<string, unique_ptr<FlagSelection>> Trigger_selection;
@@ -74,18 +73,18 @@ void HiggsFourLeptonsTool::PrintInputs() {
 void HiggsFourLeptonsTool::book_histograms(){
   for(const TString & tag : histogram_tags){
     TString mytag;
-    mytag = tag+"_Jets";      book_HistFolder(mytag, new ElectronHists(mytag));
+    mytag = tag+"_Jets";      book_HistFolder(mytag, new JetHists(mytag));
     mytag = tag+"_Muons";     book_HistFolder(mytag, new MuonHists(mytag));
-    mytag = tag+"_Electrons"; book_HistFolder(mytag, new JetHists(mytag));
+    mytag = tag+"_Electrons"; book_HistFolder(mytag, new ElectronHists(mytag));
     mytag = tag+"_H4l";       book_HistFolder(mytag, new HiggsFourLeptonsHists(mytag));
   }
 }
 
 void HiggsFourLeptonsTool::fill_histograms(TString tag){
   TString mytag;
-  mytag = tag+"_Jets";      HistFolder<ElectronHists>(mytag)->fill(*event);
+  mytag = tag+"_Jets";      HistFolder<JetHists>(mytag)->fill(*event);
   mytag = tag+"_Muons";     HistFolder<MuonHists>(mytag)->fill(*event);
-  mytag = tag+"_Electrons"; HistFolder<JetHists>(mytag)->fill(*event);
+  mytag = tag+"_Electrons"; HistFolder<ElectronHists>(mytag)->fill(*event);
   mytag = tag+"_H4l";       HistFolder<HiggsFourLeptonsHists>(mytag)->fill(*event);
 
 }
@@ -113,14 +112,12 @@ HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
   MultiID<Jet> jet_id = {PtEtaId(jet_pt_min,jet_eta_min), JetID(JetID::WP_TIGHT), JetPUID(JetPUID::WP_TIGHT), JetLeptonOverlapID(0.4)};
   jet_cleaner.reset(new JetCleaner(jet_id));
 
-  MultiID<Tau> tau_id = {TauID(Tau::DeepTauVsJetVVVLoose), TauID(Tau::DeepTauVsEleVVVLoose), TauID(Tau::DeepTauVsMuVLoose)};
-  tau_cleaner.reset(new TauCleaner(tau_id));
-
   MultiID<PFCandidate> pfcand_id = {PtEtaId(0.2, 5.2)};
   pfcand_cleaner.reset(new PFCandCleaner(pfcand_id));
 
-  njets_selection.reset(new NJetSelection(cfg, 1, -1));
-  ntaus_selection.reset(new NTauSelection(cfg, -1, 0));
+  // nele_selection.reset(new NElectonSelection(cfg, , -1));
+  // nmuo_selection.reset(new NMuonSelection(cfg, 1, -1));
+  // njets_selection.reset(new NJetSelection(cfg, 1, -1));
 
   Higgs4Leptons_finder.reset(new Higgs4LeptonsFinder(cfg));
 
@@ -143,14 +140,15 @@ void HiggsFourLeptonsTool::sort_objects(){
 void HiggsFourLeptonsTool::clean_objects(){
   muo_cleaner->process(*event);
   ele_cleaner->process(*event);
-  tau_cleaner->process(*event);
   jet_cleaner->process(*event);
   pfcand_cleaner->process(*event);
 }
 
 bool HiggsFourLeptonsTool::select_Nobjects(){
-  // if (event->genjets->size()<2) return false;
-  if(!njets_selection->passes(*event)) return false;
+  // // if (event->genjets->size()<2) return false;
+  // if(!nele_selection->passes(*event)) return false;
+  // if(!nmuo_selection->passes(*event)) return false;
+  // if(!njets_selection->passes(*event)) return false;
   return true;
 }
 
@@ -173,8 +171,7 @@ bool HiggsFourLeptonsTool::Process(){
   fill_histograms("triggers");
 
   clean_objects();
-  if(!ntaus_selection->passes(*event)) return false;
-  fill_histograms("notau_Selection");
+  fill_histograms("clean");
 
   bool pass_H4l = Higgs4Leptons_finder->process(*event);
   fill_histograms("Higgs4LeptonsReco");

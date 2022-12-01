@@ -21,11 +21,11 @@
   />
 
   <InputDatasets>
-    <Dataset Name="DYJetsToLL_standard_UL18"           Stack="true"   Color="419"  Linestyle="0"   Legend="DY"      Type="MC" />
-    <Dataset Name="ZZTo4L_standard_UL18"               Stack="true"   Color="861"  Linestyle="0"   Legend="ZZ"      Type="MC" />
-    <Dataset Name="GluGluHToZZTo4L_M125_standard_UL18" Stack="true"   Color="633"  Linestyle="0"   Legend="H(ggH)"  Type="MC" />
-    <Dataset Name="VBF_HToZZTo4L_M125_standard_UL18"   Stack="true"   Color="801"  Linestyle="0"   Legend="H(VBF)"  Type="MC" />
-    <Dataset Name="Data_standard_UL18"                 Stack="false"  Color="1"    Linestyle="0"   Legend="Data"    Type="DATA" />
+    <Dataset Name="DY_standard_UL18"   Stack="true"   Color="419"  Linestyle="0"   Legend="DY"      Type="MC" />
+    <Dataset Name="VV_standard_UL18"   Stack="true"   Color="861"  Linestyle="0"   Legend="VV"      Type="MC" />
+    <Dataset Name="ggH_standard_UL18"  Stack="true"   Color="633"  Linestyle="0"   Legend="H(ggH)"  Type="MC" />
+    <Dataset Name="VBF_standard_UL18"  Stack="true"   Color="801"  Linestyle="0"   Legend="H(VBF)"  Type="MC" />
+    <Dataset Name="Data_standard_UL18" Stack="false"  Color="1"    Linestyle="0"   Legend="Data"    Type="DATA" />
   </InputDatasets>
 
 
