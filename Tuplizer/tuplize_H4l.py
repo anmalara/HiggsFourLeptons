@@ -41,18 +41,17 @@ config_per_year = {
 years = []
 # years.append('UL16preVFP')
 # years.append('UL16postVFP')
-# years.append('UL17')
-years.append('UL18')
+years.append('UL17')
+#years.append('UL18')
 stage = 'mini'
 submit = True
-# submit = False
+submit = False
 nevt_per_job = 100000
 
 
 def main():
     for year in years:
         for samplename, sample in AllSamples.items():
-            # if not "RunD" in samplename: continue
             print(green('--> Working on sample: \'%s\'' % (samplename)))
             if not sample.minipaths.has_year(year):
                 print(yellow('   --> skipping sample for '+year))
@@ -60,9 +59,8 @@ def main():
             Tuplizer = TuplizeRunner(sample=sample, stage=stage, year=year, config=config_per_year[year], workarea=workarea, submit=submit)
             # Tuplizer.CountEvents(check_missing=True)
             # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='new')
-            Tuplizer.CleanBrokenFiles(nevt_per_job=nevt_per_job)
-            Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='resubmit')
-            # Tuplizer.CreateDatasetXMLFile(force_counting=True, count_weights=True)
+            # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='resubmit')
+            # Tuplizer.CreateDatasetXMLFile(force_counting=True, count_weights=(sample.type=="MC"), ncores=8)
 
 
 
