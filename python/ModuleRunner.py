@@ -57,7 +57,8 @@ class ModuleRunner(VariablesBase):
         self.RunAnalyser(options='o')
 
     def Merge(self):
-        self.RunAnalyser(options='f')
+        # self.RunAnalyser(options='f')
+        self.RunAnalyser(options='ift')
         # self.RunAnalyser(options='p')
 
     def RunLocal(self,ncores=4, run_on_samples=[]):

@@ -17,6 +17,7 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
       if (lep1.charge()==lep2.charge()) continue;
       TLorentzVector z1 = lep1.p4()+lep2.p4();
       if (Fail_ZMassMax(z1)) continue;
+      if (Fail_Z2MassMin(z1)) continue;
       if ( FindInVector<int>(lep_indices, i)<0 ) {
         lep_indices.push_back(i);
         lep_bool.push_back(true);
@@ -35,6 +36,7 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
       if (lep1.charge()==lep2.charge()) continue;
       TLorentzVector z1 = lep1.p4()+lep2.p4();
       if (Fail_ZMassMax(z1)) continue;
+      if (Fail_Z2MassMin(z1)) continue;
       if ( std::find(lep_indices.begin(), lep_indices.end(), i) == lep_indices.end() || (std::find(lep_indices.begin(), lep_indices.end(), i) != lep_indices.end() && lep_bool.at(std::find(lep_indices.begin(), lep_indices.end(), i) - lep_indices.begin())) ) {
         lep_indices.push_back(i);
         lep_bool.push_back(false);
@@ -48,14 +50,14 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
 
   if (lep_indices.size()<4) return false;
 
+  vector<vector<int>> used_indices={};
   for(size_t i_1=0; i_1<lep_indices.size(); i_1++){
     int index_1 = lep_indices.at(i_1);
     FlavorParticle lep_1;
     bool is_ele_1 = lep_bool.at(i_1);
     if (is_ele_1) lep_1 = (*event.electrons).at(index_1);
     else lep_1 = (*event.muons).at(index_1);
-    for(size_t i_2=0; i_2<lep_indices.size(); i_2++){
-      if (i_2!=i_1) continue;
+    for(size_t i_2=i_1+1; i_2<lep_indices.size(); i_2++){
       bool is_ele_2 = lep_bool.at(i_2);
       if (is_ele_1!=is_ele_2) continue;
       int index_2 = lep_indices.at(i_2);
@@ -70,8 +72,13 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
         bool is_ele_3 = lep_bool.at(i_3);
         if (is_ele_3) lep_3 = (*event.electrons).at(index_3);
         else lep_3 = (*event.muons).at(index_3);
-        for(size_t i_4=0; i_4<lep_indices.size(); i_4++){
-          if (i_4==i_1 || i_4==i_2 || i_4==i_3) continue;
+        for(size_t i_4=i_3+1; i_4<lep_indices.size(); i_4++){
+          if (i_4==i_1 || i_4==i_2) continue;
+          vector<int> indices = {int(i_1),int(i_2),int(i_3),int(i_4)};
+          sort(indices.begin(), indices.end());
+          bool used_set = false;
+          for(auto x :used_indices){if (x ==indices) {used_set = true;}}
+          if (used_set) continue;
           bool is_ele_4 = lep_bool.at(i_4);
           if (is_ele_3!=is_ele_4) continue;
           int index_4 = lep_indices.at(i_4);
@@ -82,10 +89,11 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
           if (Fail_GhostLeptons(lep_1,lep_2,lep_3,lep_4)) continue;
           if (Fail_LeptonPts(lep_1,lep_2,lep_3,lep_4)) continue;
           if (Fail_LeptonInvMass(lep_1,lep_2,lep_3,lep_4)) continue;
+          if (Fail_QCDSuppression(lep_1,lep_2,lep_3,lep_4)) continue;
           TLorentzVector z1 = lep_1.p4()+lep_2.p4();
-          if (Fail_ZMassMin(z1)) continue;
+          if (Fail_Z1MassMin(z1)) continue;
           TLorentzVector z2 = lep_3.p4()+lep_4.p4();
-          if (Fail_ZMassMin(z2)) continue;
+          if (Fail_Z2MassMin(z2)) continue;
           if (z1.M()<z2.M()) continue;
           if (Fail_SmartCut(z1,z2)) continue;
           TLorentzVector h = lep_1.p4()+lep_2.p4()+lep_3.p4()+lep_4.p4();
@@ -93,18 +101,7 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
           float chi2_z2 = fabs(z2.M()-Z_mass_offshell_reco)/Z_width_offshell_reco;
           float chi2_h  = fabs(h.M()-H_mass_reco)/H_width_reco;
           float chi2 = chi2_z1+chi2_z2+chi2_h;
-          if (event.H_leptons->size()!=0) {
-            int nmatched = 0;
-            for(const FlavorParticle & lep : *event.H_leptons){
-              if (deltaR(lep, lep_1)<=ghostlepton_dR_min) nmatched+=1;
-              if (deltaR(lep, lep_2)<=ghostlepton_dR_min) nmatched+=1;
-              if (deltaR(lep, lep_3)<=ghostlepton_dR_min) nmatched+=1;
-              if (deltaR(lep, lep_4)<=ghostlepton_dR_min) nmatched+=1;
-            }
-            if (nmatched==4) continue;
-            cout << "More that 1 pair found. " << h.M() << endl;
-          }
-
+          used_indices.push_back(indices);
           event.Z1_chi2->push_back(chi2_z1);
           event.Z2_chi2->push_back(chi2_z2);
           event.H_chi2->push_back(chi2_h);
@@ -128,14 +125,14 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
       }
     }
   }
+
+  int n_higgs = (*event.reco_H_bosons).size();
+  if (n_higgs==0) return false;
   sort_by_pt<Electron>(*event.H_electrons);
   sort_by_pt<Muon>(*event.H_muons);
   sort_by_pt<FlavorParticle>(*event.H_leptons);
 
-  if (Fail_QCDSuppression(event)) return false;
-
   std::string eventCategory = "undefined";
-  int n_higgs = (*event.reco_H_bosons).size();
   if (n_higgs>1) eventCategory = "multiple";
   if (n_higgs==1){
     eventCategory = "";
@@ -180,8 +177,13 @@ bool Higgs4LeptonsFinder::Fail_ZMassMax(const TLorentzVector& Z1) {
   return false;
 }
 
-bool Higgs4LeptonsFinder::Fail_ZMassMin(const TLorentzVector& Z1) {
+bool Higgs4LeptonsFinder::Fail_Z1MassMin(const TLorentzVector& Z1) {
   if (Z1.M()<highest_Z_mass_min) return true;
+  return false;
+}
+
+bool Higgs4LeptonsFinder::Fail_Z2MassMin(const TLorentzVector& Z2) {
+  if (Z2.M()<lower_Z_mass_min) return true;
   return false;
 }
 
@@ -195,16 +197,15 @@ bool Higgs4LeptonsFinder::Fail_SmartCut(const TLorentzVector& Z1, const TLorentz
   return false;
 }
 
-bool Higgs4LeptonsFinder::Fail_QCDSuppression(HiggsFourLeptonsEvent & event) {
+bool Higgs4LeptonsFinder::Fail_QCDSuppression(const FlavorParticle& lep1,const FlavorParticle& lep2,const FlavorParticle& lep3,const FlavorParticle& lep4){
+  vector<FlavorParticle> leptons = {lep1,lep2,lep3,lep4};
   // all four opposite-sign pairs (regardless of lepton flavor) to suppress QCD
-  for(size_t i=0; i<(*event.H_leptons).size(); i++){
-    FlavorParticle lep1 = (*event.H_leptons).at(i);
-    for(size_t j=i+1; j<(*event.H_leptons).size(); j++){
-      FlavorParticle lep2 = (*event.H_leptons).at(j);
+  for (const FlavorParticle lep1: leptons){
+    for (const FlavorParticle lep2: leptons){
       if (lep1.charge()==lep2.charge()) continue;
       TLorentzVector z1 = lep1.p4()+lep2.p4();
-      if (z1.M()<Z_mass_min) return false;
+      if (z1.M()<Z_mass_min) return true;
     }
   }
-  return true;
+  return false;
 }

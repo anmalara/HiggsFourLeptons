@@ -18,7 +18,10 @@ HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
   book<TH1F>("number_H",          ";number of H bosons ; Events / bin",   11,      -0.5,    10.5);
 
   for (unsigned int i=0;i<EventCategories.size();i++) {
-    hist<TH1F>("eventCategory")->GetXaxis()->SetBinLabel(i+1,EventCategories[i].c_str());
+    std::string label = EventCategories[i];
+    if (label=="undefined") label = "undef.";
+    if (label=="multiple") label = ">4l";
+    hist<TH1F>("eventCategory")->GetXaxis()->SetBinLabel(i+1,label.c_str());
   }
 
   for (const TString& name: {"H", "Z1", "Z2", "H_else", "Z_else"}){
@@ -30,15 +33,17 @@ HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
       book<TH1F>(name+"_mass_ext",";mass_{"+name+"}; Events / bin",      100,     170,    1170.0);
       book<TH1F>(name+"_mass_inc",";mass_{"+name+"}; Events / bin",      275,      70,    1170.0);
     } else {
-      book<TH1F>(name+"_mass",   ";mass_{"+name+"}; Events / bin",        26,       0,     130.0);
+      book<TH1F>(name+"_mass",   ";mass_{"+name+"}; Events / bin",        65,       0,     130.0);
     }
     if (FindInString("Z1",name.Data())){
       book<TH2F>("Z1vsZ2_pt",    ";p_{T,Z_1};p_{T,Z_2}",                 100,       0.,    500,   100,       0.,    500);
       book<TH2F>("Z1vsZ2_eta",   ";#eta_{Z_1};#eta_{,Z_2}",              100,      -5.0,     5.0, 100,      -5.0,     5.0);
       book<TH2F>("Z1vsZ2_phi",   ";#phi_{Z_1};#phi_{,Z_2}",              100,      -4.0,     4.0, 100,      -4.0,     4.0);
-      book<TH2F>("Z1vsZ2_mass",  ";mass_{Z_1};mass_{,Z_2}",               26,       0,     130.0,  26,       0,     130.0);
+      book<TH2F>("Z1vsZ2_mass",  ";mass_{Z_1};mass_{,Z_2}",               65,       0,     130.0,  65,       0,     130.0);
     }
   }
+  book<TH1F>("AlternativeZ_mass", ";mass_{Z}; Events / bin",              65,       0,     130.0);
+  book<TH1F>("AllZ_mass",         ";mass_{Z}; Events / bin",              65,       0,     130.0);
 
   max_index = 5;
   for (const TString& lep: {"ele", "muo", "lep"}){
@@ -60,7 +65,11 @@ HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
 void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
   double weight = event.weight;
   hist<TH1F>("sumweights")->Fill(1, weight);
-  hist<TH1F>("eventCategory")->Fill(event.eventCategory().c_str(), weight);
+
+  std::string label = event.eventCategory();
+  if (label=="undefined") label = "undef.";
+  if (label=="multiple") label = ">4l";
+  hist<TH1F>("eventCategory")->Fill(label.c_str(), weight);
 
   int ele_size = (*event.H_electrons).size();
   int muo_size = (*event.H_muons).size();
@@ -89,6 +98,18 @@ void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
       hist<TH2F>("Z1vsZ2_eta")->Fill(boson1.Eta(), boson.Eta(), weight);
       hist<TH2F>("Z1vsZ2_phi")->Fill(boson1.Phi(), boson.Phi(), weight);
       hist<TH2F>("Z1vsZ2_mass")->Fill(boson1.M(), boson.M(), weight);
+    }
+  }
+
+  for(int i=0; i<lep_size; i++){
+    const FlavorParticle lep1 = (*event.H_leptons).at(i);
+    for(int j=j+1; i<lep_size; i++){
+      if (j>i+4) continue;
+      const FlavorParticle lep2 = (*event.H_leptons).at(j);
+      TLorentzVector z1 = lep1.p4()+lep2.p4();
+      hist<TH1F>("AllZ_mass")->Fill(z1.M(), weight);
+      if (lep1.charge()==lep2.charge()) continue;
+      hist<TH1F>("AlternativeZ_mass")->Fill(z1.M(), weight);
     }
   }
 
