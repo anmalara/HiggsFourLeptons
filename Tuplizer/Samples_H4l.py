@@ -76,6 +76,19 @@ def GetDasName(name,sample,year,run):
     return name
 
 
+def Add_Data_SingleElectron(SampleContainer):
+    sample_name = 'SingleElectron'
+    nevents_das={
+        'UL17':{'das':       {'B':60537490, 'C':136637888,  'D':51526521,  'E':102122055,  'F':128467223,},
+                'generated': {'B':-1,       'C':-1,         'D':-1,        'E':-1,         'F':-1},
+          },
+    }
+    DAS_Names = {
+        'UL17': '/SingleElectron/Run2017RUN-UL2017_MiniAODv2-v1/MINIAOD',
+        }
+    Add_Data(SampleContainer, sample_name = sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes, transform=GetDasName)
+
+
 def Add_Data_EGamma(SampleContainer):
     sample_name = 'EGamma'
     nevents_das={
@@ -146,6 +159,7 @@ def Add_Samples_H4L(SampleContainer):
     Add_Signals_GluGlu(SampleContainer)
     Add_Diboson(SampleContainer)
     Add_DY(SampleContainer)
+    Add_Data_SingleElectron(SampleContainer)
     Add_Data_EGamma(SampleContainer)
     Add_Data_SingleMuon(SampleContainer)
     Add_Data_DoubleMuon(SampleContainer)

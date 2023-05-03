@@ -49,6 +49,7 @@
 
   <AdditionalVariables>
     <Variable Name="test" Value="testvalue"/>
+    <Variable Name="LumiblockFile" Value="None"/>
   </AdditionalVariables>
 
 </Configuration>

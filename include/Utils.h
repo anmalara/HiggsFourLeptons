@@ -21,8 +21,13 @@ const float ele_eta_min = 2.5;
 const float muo_eta_min = 2.4;
 const float jet_eta_min = 4.7;
 
+const float lep_dxy_min = 0;
+const float lep_dxy_max = 0.5;
+const float lep_dz_min = 0;
+const float lep_dz_max = 1;
+
 const Electron::Selector ele_id = Electron::IDMVAIsoLoose;
-const Muon::Selector muo_id  = Muon::IDCutBasedTrackerHighPt;
+const Muon::Selector muo_id  = Muon::IDCutBasedLoose;
 const Muon::Selector muo_iso = Muon::IsoPFLoose;
 
 const float H_mass_reco = 125;
@@ -32,6 +37,7 @@ const float Z_width_reco = 15;
 const float Z_mass_offshell_reco = 25;
 const float Z_width_offshell_reco = 20;
 const float highest_Z_mass_min = 40;
+const float lower_Z_mass_min = 12;
 const float fourLeptonInvMass_min = 70;
 const float fourLeptonInvMass_min_offshell = 180;
 const float Z_mass_min = 4;

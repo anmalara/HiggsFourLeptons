@@ -57,7 +57,7 @@ def main():
                 print(yellow('   --> skipping sample for '+year))
                 continue
             Tuplizer = TuplizeRunner(sample=sample, stage=stage, year=year, config=config_per_year[year], workarea=workarea, submit=submit)
-            # Tuplizer.CountEvents(check_missing=True)
+            Tuplizer.CountEvents(check_missing=True)
             # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='new')
             # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='resubmit')
             # Tuplizer.CreateDatasetXMLFile(force_counting=True, count_weights=(sample.type=="MC"), ncores=8)

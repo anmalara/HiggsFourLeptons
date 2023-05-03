@@ -1,17 +1,21 @@
 #include <iostream>
 
 #include "LEAF/Analyzer/include/BaseTool.h"
+#include "LEAF/Analyzer/include/EventHists.h"
 #include "LEAF/Analyzer/include/JetHists.h"
 #include "LEAF/Analyzer/include/MuonHists.h"
 #include "LEAF/Analyzer/include/ElectronHists.h"
+#include "LEAF/Analyzer/include/TauHists.h"
 #include "LEAF/Analyzer/include/JetIds.h"
 #include "LEAF/Analyzer/include/MuonIds.h"
 #include "LEAF/Analyzer/include/ElectronIds.h"
+#include "LEAF/Analyzer/include/TauIds.h"
 #include "LEAF/Analyzer/include/NElectronSelection.h"
 #include "LEAF/Analyzer/include/NMuonSelection.h"
 #include "LEAF/Analyzer/include/NJetSelection.h"
 #include "LEAF/Analyzer/include/FlagSelection.h"
 #include "LEAF/Analyzer/include/LumiWeightApplicator.h"
+#include "LEAF/Analyzer/include/LumiblockSelection.h"
 
 #include "LEAF/HiggsFourLeptons/include/Utils.h"
 #include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsEvent.h"
@@ -47,9 +51,11 @@ private:
   unordered_map<string, bool> input_bools;
   // Modules used in the analysis
   unique_ptr<LumiWeightApplicator> lumiweight_applicator;
+  unique_ptr<LumiblockSelection> lumiblock_selection;
   unique_ptr<MuonCleaner> muo_cleaner;
   unique_ptr<ElectronCleaner> ele_cleaner;
   unique_ptr<JetCleaner> jet_cleaner;
+  unique_ptr<TauCleaner> tau_cleaner;
   unique_ptr<PFCandCleaner> pfcand_cleaner;
 
   // Selections used in the analysis
@@ -73,18 +79,23 @@ void HiggsFourLeptonsTool::PrintInputs() {
 void HiggsFourLeptonsTool::book_histograms(){
   for(const TString & tag : histogram_tags){
     TString mytag;
+
+    mytag = tag+"_Event";     book_HistFolder(mytag, new EventHists(mytag));
     mytag = tag+"_Jets";      book_HistFolder(mytag, new JetHists(mytag));
     mytag = tag+"_Muons";     book_HistFolder(mytag, new MuonHists(mytag));
     mytag = tag+"_Electrons"; book_HistFolder(mytag, new ElectronHists(mytag));
+    mytag = tag+"_Taus";      book_HistFolder(mytag, new TauHists(mytag));
     mytag = tag+"_H4l";       book_HistFolder(mytag, new HiggsFourLeptonsHists(mytag));
   }
 }
 
 void HiggsFourLeptonsTool::fill_histograms(TString tag){
   TString mytag;
+  mytag = tag+"_Event";     HistFolder<EventHists>(mytag)->fill(*event);
   mytag = tag+"_Jets";      HistFolder<JetHists>(mytag)->fill(*event);
   mytag = tag+"_Muons";     HistFolder<MuonHists>(mytag)->fill(*event);
   mytag = tag+"_Electrons"; HistFolder<ElectronHists>(mytag)->fill(*event);
+  mytag = tag+"_Taus";      HistFolder<TauHists>(mytag)->fill(*event);
   mytag = tag+"_H4l";       HistFolder<HiggsFourLeptonsHists>(mytag)->fill(*event);
 
 }
@@ -102,15 +113,19 @@ HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
   event->reset();
 
   lumiweight_applicator.reset(new LumiWeightApplicator(cfg));
+  lumiblock_selection.reset(new LumiblockSelection(cfg));
 
-  MultiID<Muon> muo_ID = {PtEtaId(muo_pt_min, muo_eta_min), MuonID(muo_id), MuonID(muo_iso)};
-  MultiID<Electron> ele_ID = {PtEtaId(ele_pt_min, ele_eta_min), ElectronDetectorHolesID(), ElectronID(ele_id)};
+  MultiID<Muon> muo_ID = {PtEtaId(muo_pt_min, muo_eta_min), MuonDxyID(lep_dxy_min,lep_dxy_max), MuonDzID(lep_dz_min,lep_dz_max)};
+  MultiID<Electron> ele_ID = {PtEtaId(ele_pt_min, ele_eta_min), ElectronDetectorHolesID(), ElectronDxyID(lep_dxy_min,lep_dxy_max), ElectronDzID(lep_dz_min,lep_dz_max)};
 
   muo_cleaner.reset(new MuonCleaner(muo_ID));
   ele_cleaner.reset(new ElectronCleaner(ele_ID));
 
   MultiID<Jet> jet_id = {PtEtaId(jet_pt_min,jet_eta_min), JetID(JetID::WP_TIGHT), JetPUID(JetPUID::WP_TIGHT), JetLeptonOverlapID(0.4)};
   jet_cleaner.reset(new JetCleaner(jet_id));
+
+  MultiID<Tau> tau_id = {TauID(Tau::DeepTauVsJetVVVLoose), TauID(Tau::DeepTauVsEleVVVLoose), TauID(Tau::DeepTauVsMuVLoose)};
+  tau_cleaner.reset(new TauCleaner(tau_id));
 
   MultiID<PFCandidate> pfcand_id = {PtEtaId(0.2, 5.2)};
   pfcand_cleaner.reset(new PFCandCleaner(pfcand_id));
@@ -141,6 +156,7 @@ void HiggsFourLeptonsTool::clean_objects(){
   muo_cleaner->process(*event);
   ele_cleaner->process(*event);
   jet_cleaner->process(*event);
+  tau_cleaner->process(*event);
   pfcand_cleaner->process(*event);
 }
 
@@ -157,6 +173,8 @@ bool HiggsFourLeptonsTool::Process(){
   sort_objects();
   fill_histograms("input");
 
+  bool pass_lumi_selection = lumiblock_selection->passes(*event);
+  if (!pass_lumi_selection) return false;
   lumiweight_applicator->process(*event);
   fill_histograms("weights");
 
