@@ -22,6 +22,9 @@
 #include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsHists.h"
 #include "LEAF/HiggsFourLeptons/include/Higgs4LeptonsFinder.h"
 
+#include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsDNN.h"
+#include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsDNNHists.h"
+
 using namespace std;
 
 class HiggsFourLeptonsTool : public BaseTool {
@@ -45,7 +48,7 @@ private:
 
   string NameTool = "HiggsFourLeptonsTool";
   vector<string> histogram_tags = {"input", "weights", "triggers", "clean",
-  "Higgs4LeptonsReco", "Higgs4Leptons_Selection", "nominal"};
+  "Higgs4LeptonsReco", "Higgs4Leptons_Selection", "nominal","4e","4m","2m2e"};
 
   unordered_map<string, string> input_strings;
   unordered_map<string, bool> input_bools;
@@ -63,8 +66,11 @@ private:
   unique_ptr<NMuonSelection> nmuo_selection;
   unique_ptr<NJetSelection> njets_selection;
   unique_ptr<Higgs4LeptonsFinder> Higgs4Leptons_finder;
+  unique_ptr<HiggsFourLeptonsDNN> DNN_module;
 
   unordered_map<string, unique_ptr<FlagSelection>> Trigger_selection;
+  unordered_map<string, unique_ptr<FlagSelection>> Trigger_selection_pass;
+  unordered_map<string, unique_ptr<FlagSelection>> Trigger_selection_fail;
 };
 
 
@@ -86,6 +92,7 @@ void HiggsFourLeptonsTool::book_histograms(){
     mytag = tag+"_Electrons"; book_HistFolder(mytag, new ElectronHists(mytag));
     mytag = tag+"_Taus";      book_HistFolder(mytag, new TauHists(mytag));
     mytag = tag+"_H4l";       book_HistFolder(mytag, new HiggsFourLeptonsHists(mytag));
+    mytag = tag+ "_PF";         book_HistFolder(mytag, new HiggsFourLeptonsDNNHists(mytag));
   }
 }
 
@@ -97,12 +104,15 @@ void HiggsFourLeptonsTool::fill_histograms(TString tag){
   mytag = tag+"_Electrons"; HistFolder<ElectronHists>(mytag)->fill(*event);
   mytag = tag+"_Taus";      HistFolder<TauHists>(mytag)->fill(*event);
   mytag = tag+"_H4l";       HistFolder<HiggsFourLeptonsHists>(mytag)->fill(*event);
+  mytag = tag+"_PF";        HistFolder<HiggsFourLeptonsDNNHists>(mytag)->fill(*event);
 
 }
 
 
 
 HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
+
+  DNN_module.reset(new  HiggsFourLeptonsDNN(cfg));
 
   input_strings["name"] = cfg.dataset_name();
   input_strings["type"] = cfg.dataset_type();
@@ -136,9 +146,23 @@ HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
 
   Higgs4Leptons_finder.reset(new Higgs4LeptonsFinder(cfg));
 
-  for (auto& t : Trigger_run_validity.at(input_strings["year"])) {
-    if (input_strings["type"]=="DATA" && !FindInString(t.second.first,input_strings["name"])) continue;
-    Trigger_selection[t.first].reset(new FlagSelection(cfg, t.first ));
+std::vector<std::string> Pass_require = Trigger_map.at(input_strings["year"]).at("MC").at("Pass");
+  std::vector<std::string> Fail_require = Trigger_map.at(input_strings["year"]).at("MC").at("Fail");
+  
+  if (input_strings["type"]=="DATA") {
+    for (auto& t : Trigger_map.at(input_strings["year"])) {
+      if (!FindInString(t.first,input_strings["name"])) continue;
+      Pass_require = t.second.at("Pass");
+      Fail_require = t.second.at("Fail");
+  }
+  }
+
+  for (auto& t : Pass_require) {
+      Trigger_selection_pass[t].reset(new FlagSelection(cfg, t));
+  }
+
+  for (auto& t : Fail_require) {
+      Trigger_selection_fail[t].reset(new FlagSelection(cfg, t));
   }
 
   book_histograms();
@@ -169,7 +193,6 @@ bool HiggsFourLeptonsTool::select_Nobjects(){
 }
 
 bool HiggsFourLeptonsTool::Process(){
-
   sort_objects();
   fill_histograms("input");
 
@@ -179,23 +202,38 @@ bool HiggsFourLeptonsTool::Process(){
   fill_histograms("weights");
 
   bool pass_triggers_OR = false;
-  for (auto& el : Trigger_selection) {
-    // if (event.isRealData && (event.run < Trigger_run_validity.at(input_strings["year"]).at(el.first).first || event.run > Trigger_run_validity.at(input_strings["year"]).at(el.first).second) ) continue;
+  for (auto& el : Trigger_selection_pass) {
     pass_triggers_OR += el.second->passes(*event);
-    if (pass_triggers_OR) break;
   }
   if (!pass_triggers_OR) return false;
+
+  bool fail_triggers_OR = false;
+  for (auto& el : Trigger_selection_fail) {
+    fail_triggers_OR += el.second->passes(*event);
+  }
+
+  if (fail_triggers_OR){
+    return false;
+  }
 
   fill_histograms("triggers");
 
   clean_objects();
   fill_histograms("clean");
-
   bool pass_H4l = Higgs4Leptons_finder->process(*event);
+
+  DNN_module->process(*event);
   fill_histograms("Higgs4LeptonsReco");
   if(!pass_H4l) return false;
   fill_histograms("Higgs4Leptons_Selection");
-
+  std::vector<string> eventTypes = {"4e","4m","2m2e"};
+  for(size_t i=0;i<eventTypes.size();i++){
+    string eventLabel = eventTypes[i];
+    size_t found = (event->eventCategory()).find(eventLabel);
+    if(found!=string::npos){
+      fill_histograms(eventLabel);
+    }
+  }
   // fill one set of histograms called "nominal", which is necessary for PostAnalyzer scripts
   fill_histograms("nominal");
 

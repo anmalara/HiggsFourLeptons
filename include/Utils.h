@@ -27,7 +27,7 @@ const float lep_dz_min = 0;
 const float lep_dz_max = 1;
 
 const Electron::Selector ele_id = Electron::IDMVAIsoLoose;
-const Muon::Selector muo_id  = Muon::IDCutBasedLoose;
+const Muon::Selector muo_id  = Muon::IDCutBasedTight; //IDCutBasedLoose
 const Muon::Selector muo_iso = Muon::IsoPFLoose;
 
 const float H_mass_reco = 125;
@@ -45,44 +45,98 @@ inline const float Z_mass_max = Z_mass_reco+2*Z_width_reco;
 const float lep0_pt_min = 20;
 const float lep1_pt_min = 10;
 const float ghostlepton_dR_min = 0.02;
+const float cross_cleaning_dR_min = 0.05;
 
 
 const std::vector<std::string> EventCategories = {"undefined", "multiple", "4m", "4e", "2m2e", "OS-4m", "OS-4e", "OS-2m2e"};
 
 
-const std::unordered_map<std::string, std::map<std::string, std::pair<std::string, std::pair<int, int>>>>
-Trigger_run_validity = {
-  { "UL17", {
-    { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_*",              std::pair("DoubleEG",       std::pair(297046, 284068)) },
-    { "HLT_DoubleEle33_CaloIdL_GsfTrkIdVL*",                   std::pair("DoubleEG",       std::pair(297046, 284068)) },
-    { "HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL*",                std::pair("DoubleEG",       std::pair(297046, 284068)) },
-    { "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8*",          std::pair("DoubleMuon",     std::pair(297046, 284068)) },
-    { "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8*",            std::pair("DoubleMuon",     std::pair(297046, 284068)) },
-    { "HLT_TripleMu_12_10_5*",                                 std::pair("DoubleMuon",     std::pair(297046, 284068)) },
-    { "HLT_TripleMu_10_5_5_D2*",                               std::pair("DoubleMuon",     std::pair(297046, 284068)) },
-    { "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL*",      std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ*",    std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ*",   std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ*",   std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_DiMu9_Ele9_CaloIdL_TrackIdL_DZ*",                   std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_Mu8_DiEle12_CaloIdL_TrackIdL*",                     std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_Mu8_DiEle12_CaloIdL_TrackIdL_DZ*",                  std::pair("MuonEG",         std::pair(297046, 284068)) },
-    { "HLT_Ele35_WPTight_Gsf_v*",                              std::pair("SingleElectron", std::pair(297046, 284068)) },
-    { "HLT_Ele38_WPTight_Gsf_v*",                              std::pair("SingleElectron", std::pair(297046, 284068)) },
-    { "HLT_Ele40_WPTight_Gsf_v*",                              std::pair("SingleElectron", std::pair(297046, 284068)) },
-    { "HLT_IsoMu27*",                                          std::pair("SingleMuon",     std::pair(297046, 284068)) },
-  }},
+const std::unordered_map<std::string, std::map<std::string, std::map<std::string, std::vector<std::string> >>>
+Trigger_map = {
   { "UL18", {
-    { "HLT_IsoMu24_v*",                                        std::pair("SingleMuon",     std::pair(315252, 325175)) },
-    { "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*", std::pair("SingleMuon",     std::pair(315252, 325175)) },
-    { "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",             std::pair("DoubleEG",       std::pair(315252, 325175)) },
-    { "HLT_DoubleEle25_CaloIdL_MW_v*",                         std::pair("DoubleEG",       std::pair(315252, 325175)) },
-    { "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",        std::pair("DoubleMuon",     std::pair(315252, 325175)) },
-    { "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",    std::pair("MuonEG",         std::pair(315252, 325175)) },
-    { "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",  std::pair("MuonEG",         std::pair(315252, 325175)) },
-    { "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*", std::pair("MuonEG",         std::pair(315252, 325175)) },
-    { "HLT_DiMu9_Ele9_CaloIdL_TrackIdL_DZ_v*",                 std::pair("MuonEG",         std::pair(315252, 325175)) },
-    { "HLT_Ele32_WPTight_Gsf_v*",                              std::pair("SingleElectron", std::pair(315252, 325175)) },
-    { "HLT_IsoMu24_v*",                                        std::pair("SingleMuon",     std::pair(315252, 325175)) },
-  }},
-};
+    {"MC", 
+    {
+      {"Pass", {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_IsoMu24_v*",
+                "HLT_IsoTkMu24_v*",
+                "HLT_IsoMu27_v*",
+                "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*",
+                "HLT_Ele27_WPTight_Gsf_v*",
+                "HLT_Ele32_WPTight_Gsf_v*",
+                "HLT_Ele35_WPTight_Gsf_v*",
+                "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*"}},
+      {"Fail", {}},
+    }
+    },
+    {"EGamma", 
+    {
+      {"Pass", {"HLT_Ele27_WPTight_Gsf_v*",
+                "HLT_Ele32_WPTight_Gsf_v*",
+                "HLT_Ele35_WPTight_Gsf_v*",
+                "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*"}},
+      {"Fail", {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_IsoMu24_v*",
+                "HLT_IsoTkMu24_v*",
+                "HLT_IsoMu27_v*",
+                "HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*"}},
+    }
+    },
+    {"DoubleMuon", 
+    {
+      {"Pass", {"HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
+                "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*"}},
+      {"Fail", {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_IsoMu24_v*",
+                "HLT_IsoTkMu24_v*",
+                "HLT_IsoMu27_v*"}},
+    }
+    },
+    {"MuonEG", 
+    {
+      {"Pass", {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*"}},
+      {"Fail", {}},
+    }
+    },
+    {"SingleMuon", 
+    {
+      {"Pass", {"HLT_IsoMu24_v*",
+                "HLT_IsoTkMu24_v*",
+                "HLT_IsoMu27_v*"}},
+      {"Fail", {"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*"}},
+    }
+    }
+    }
+  }
+  };
+
+
+
+
