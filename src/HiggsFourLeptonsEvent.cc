@@ -14,11 +14,23 @@ void HiggsFourLeptonsEvent::SetNewVectors(){
   Z1_chi2 = new std::vector<float>;
   Z2_chi2 = new std::vector<float>;
   HZZ_chi2 = new std::vector<float>;
+
+  pt = new std::vector<float>;
+  eta = new std::vector<float>;
+  phi = new std::vector<float>;
+  energy = new std::vector<float>;
+  pdgid = new std::vector<float>;
+  charge = new std::vector<float>;
+  puppiweight = new std::vector<float>;
+  energy_log = new std::vector<float>;
+  pt_log = new std::vector<float>;
+  mask = new std::vector<float>;
 }
 
 
 void HiggsFourLeptonsEvent::SetNewScalars(){
   m_eventCategory = "undefined";
+  m_dnn_output = -1;
 }
 
 void HiggsFourLeptonsEvent::DeleteVectors(){
@@ -31,6 +43,17 @@ void HiggsFourLeptonsEvent::DeleteVectors(){
   delete Z1_chi2;
   delete Z2_chi2;
   delete HZZ_chi2;
+
+  delete pt;
+  delete eta;
+  delete phi;
+  delete energy;
+  delete pdgid;
+  delete charge;
+  delete puppiweight;
+  delete energy_log;
+  delete pt_log;
+  delete mask;
 }
 
 void HiggsFourLeptonsEvent::ResetVectors(){
@@ -43,6 +66,17 @@ void HiggsFourLeptonsEvent::ResetVectors(){
   Z1_chi2 = 0;
   Z2_chi2 = 0;
   HZZ_chi2 = 0;
+
+  pt = 0;
+  eta = 0;
+  phi = 0;
+  energy = 0;
+  pdgid = 0;
+  charge = 0;
+  puppiweight = 0;
+  energy_log = 0;
+  pt_log = 0;
+  mask = 0;
 }
 
 
@@ -68,3 +102,5 @@ void HiggsFourLeptonsEvent::reset(){
   SetNewVectors();
   SetNewScalars();
 }
+
+
