@@ -15,7 +15,7 @@ scram: dict
 
 $(ANALYSYSNAME)Classes:
 	@echo "--> Creating shared library with $@ custom class dictionaries."
-	@rootcling -f $(LIBDIR_CMSSW)/$@_dict.cxx -c -p -I${LEAFPATH} $(INCLUDES) include/$@_Linkdef.hpp
+	@rootcling -f $(LIBDIR_CMSSW)/$@_dict.cxx -c -p -I${ONNXRUNTIMEINC} -I${LEAFPATH} $(INCLUDES) include/$@_Linkdef.hpp
 	@$(CC) $(CFLAGSDICT) $(LFLAGS) -shared -o $(LIBDIR_CMSSW)/lib$@.so $(ROOTLIBS) $(CMSSWLIBS) $(LIBDIR_CMSSW)/$@_dict.cxx
 
 clean:
