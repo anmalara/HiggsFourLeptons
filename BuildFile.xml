@@ -1,6 +1,7 @@
 <use name="root"/>
 <use name="libxml2"/>
 <use name="lhapdf"/>
+<use name="onnxruntime"/>
 <use name="LEAF/Analyzer"/>
 
 <export>
