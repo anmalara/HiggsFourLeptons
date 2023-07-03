@@ -1,6 +1,4 @@
-import cgi
 import ROOT
-import sys
 import os
 from ModuleRunnerBase import GenericPath
 
