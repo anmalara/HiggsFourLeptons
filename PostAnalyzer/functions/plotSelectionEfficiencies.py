@@ -13,7 +13,7 @@ def main():
     years = ['UL18']
     types = ['MC','DATA']
     families = ['ggH','VBF','VV', 'DY', 'Data']
-    path_root = generic.pnfs_path + '/Analyses/HiggsFourLeptons/UL18/HiggsFourLeptons/'
+    path_root = generic.pnfs_path + '/Analyses/HiggsFourLeptons/'
     save_loc = generic.analysis_path +'/PostAnalyzer/pdfs'
     save_name = 'selectionEfficiencies'
     histograms = []
@@ -22,6 +22,7 @@ def main():
     names = []
 
     for year in years:
+        path_root += (year + '/HiggsFourLeptons/')
         for type in types:
             for family in families:
                 rootfile = type + '__' + family + '_standard_' + year + '.root' 
