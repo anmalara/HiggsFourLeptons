@@ -53,8 +53,6 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
 
   if (lep_indices.size()<4) return false;
 
-  vector<vector<int>> used_indices={};
-  vector<FlavorParticle> choices_lep4 = {};
   for(size_t i_1=0; i_1<lep_indices.size(); i_1++){
     int index_1 = lep_indices.at(i_1);
     FlavorParticle lep_1;
@@ -79,8 +77,6 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
         float current_chi2_z1 = 100;
         for(size_t i_4=i_3+1; i_4<lep_indices.size(); i_4++){
           if (i_4==i_1 || i_4==i_2) continue;
-          vector<int> indices = {int(i_1),int(i_2),int(i_3),int(i_4)};
-          sort(indices.begin(), indices.end());
           bool is_ele_4 = lep_bool.at(i_4);
           if (is_ele_3!=is_ele_4) continue;
           int index_4 = lep_indices.at(i_4);
@@ -101,7 +97,6 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
             if (Fail_SmartCut(lep_1,lep_2,lep_3,lep_4)) continue;
           }
 
-          used_indices.push_back(indices);
           TLorentzVector h = lep_1.p4()+lep_2.p4()+lep_3.p4()+lep_4.p4();
           float chi2_z1 = fabs(z1.M()-Z_mass_reco)/Z_width_reco;
           float chi2_z2 = fabs(z2.M()-Z_mass_offshell_reco)/Z_width_offshell_reco;
