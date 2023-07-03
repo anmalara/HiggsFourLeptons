@@ -5,7 +5,6 @@
 #include <map>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
-#include <unordered_map>
 
 #include "LEAF/Analyzer/include/RecoEvent.h"
 
