@@ -17,7 +17,7 @@ public:
   ~HiggsFourLeptonsDNNHists() = default;
 
   // Main functions
-  void fill(const HiggsFourLeptonsEvent & event) override;
+  void fill(const HiggsFourLeptonsEvent & event);
 
   vector<ParticleType> get_types() const {return types;}
 

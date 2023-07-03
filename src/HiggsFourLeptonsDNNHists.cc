@@ -8,7 +8,7 @@
 
 using namespace std;
 
-HiggsFourLeptonsDNNHists::HiggsFourLeptonsDNNHists(TString dir_) : HiggsFourLeptonsHists(dir_){
+HiggsFourLeptonsDNNHists::HiggsFourLeptonsDNNHists(TString dir_) : BaseHists(dir_){
     int n_types = get_types().size();
     book<TH1F>("sumweights",        ";sum of event weights; Events / bin",          1,          0.5,        1.5);
     book<TH1F>("pt_cand",           ";p_{T};Events / bin",                          40,         0.0,        20.0);
