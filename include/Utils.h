@@ -47,6 +47,9 @@ const float lep1_pt_min = 10;
 const float ghostlepton_dR_min = 0.02;
 const float cross_cleaning_dR_min = 0.05;
 
+const float muo_iso_rel_03_min = 0.35;
+const float ele_iso_rel_03_min = 0.2;
+
 
 const std::vector<std::string> EventCategories = {"undefined", "multiple", "4m", "4e", "2m2e", "OS-4m", "OS-4e", "OS-2m2e"};
 

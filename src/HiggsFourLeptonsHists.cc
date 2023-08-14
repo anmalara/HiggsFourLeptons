@@ -1,12 +1,14 @@
 #include "LEAF/Analyzer/include/constants.h"
 #include "LEAF/Analyzer/include/useful_functions.h"
-
+#include "LEAF/Analyzer/include/BaseHists.h"
 #include "LEAF/HiggsFourLeptons/include/Utils.h"
 #include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsHists.h"
+#include "LEAF/Analyzer/include/GenLevelUtils.h"
 
 using namespace std;
 
 HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
+
 
   book<TH1F>("sumweights",        ";sum of event weights; Events / bin",   1,       0.5,     1.5);
   book<TH1F>("eventCategory",     ";eventCategory; Events / bin", EventCategories.size(), 0., EventCategories.size());
@@ -76,6 +78,16 @@ HiggsFourLeptonsHists::HiggsFourLeptonsHists(TString dir_) : BaseHists(dir_){
   book<TH1F>("DNN_score", ";DNN score;Events / bin", 100,0.0,1.0);
   book<TH1F>("dZ", ";dz;Events / bin",100,-1.0,1.0);
   book<TH1F>("deltaZ", ";#Delta Z;Events / bin",100,0.0,2.0);
+  for(size_t i=0;i<muoIso_variables_labels.size();++i){
+    TString label = muoIso_variables_labels[i];
+    book<TH1F>("muo_" + label + "_lowPtLep",";" + label + ";Events / bin",20,0.0,0.5);
+    }
+  for(size_t i=0;i<eleIso_variables_labels.size();++i){
+    TString label = eleIso_variables_labels[i];
+    book<TH1F>("ele_" + label + "_lowPtLep",";" + label + ";Events / bin",20,0.0,0.5);
+    }
+  book<TH1F>("ID_lowPtLep",";Id;Events / bin",labels_pdgids.size(),0.0,labels_pdgids.size());
+  book<TH1F>("AllLep_pdgid", ";pdgid;Events / bin", labels_pdgids.size(),0.0,labels_pdgids.size());
 }
 
 void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
@@ -209,14 +221,47 @@ void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
     }   
   }
   //invariant mass, all leptons combinations, no flavor nor charge considerations
+  int index = 1;
+  //set Xlabels of AllLep_pdgid histogram
+  for(auto type : labels_pdgids){
+      hist<TH1F>("AllLep_pdgid")->GetXaxis()->SetBinLabel(index,type2str(type).c_str());
+      hist<TH1F>("ID_lowPtLep")->GetXaxis()->SetBinLabel(index,type2str(type).c_str());
+      ++index;
+  }
   for(int i=0;i<lep_size; i++){
-    const FlavorParticle lep1 = (*event.H_leptons).at(i);
+    FlavorParticle lep1 = (*event.H_leptons).at(i);
+    std::string type = type2str((int)fabs((*event.H_leptons).at(i).pdgid()));
+    hist<TH1F>("AllLep_pdgid")->Fill(type.c_str(),weight);
+    if(lep1.pt()<20.0){
+     hist<TH1F>("ID_lowPtLep")->Fill(type.c_str(),weight);
+    }
     for(int j=i+1;j<lep_size; j++){
       const FlavorParticle lep2 = (*event.H_leptons).at(j);
-        TLorentzVector pair = lep1.p4() + lep2.p4();
-        hist<TH1F>("leptons_combinations")->Fill(pair.M(),weight);
+      TLorentzVector pair = lep1.p4() + lep2.p4();
+      hist<TH1F>("leptons_combinations")->Fill(pair.M(),weight);
     }
   }
+  for(int i=0;i<ele_size;++i){
+    Electron ele1 = (*event.H_electrons).at(i);
+    if(ele1.pt()<20.0){
+      if(fabs(ele1.pdgid())==11){//electron
+        hist<TH1F>("ele_iso_rel_03_lowPtLep")->Fill(ele1.iso_rel_03(),weight);
+        hist<TH1F>("ele_iso_rel_03_charged_lowPtLep")->Fill(ele1.iso_rel_03_charged(),weight);
+      }
+    }
+  }
+  for(int i=0;i<muo_size;++i){
+    Muon muo1 = (*event.H_muons).at(i);
+    if(muo1.pt()<20.0){
+      if(fabs(muo1.pdgid())==13){//Muon
+        hist<TH1F>("muo_iso_rel_04_lowPtLep")->Fill(muo1.iso_rel_04(),weight);
+        hist<TH1F>("muo_iso_rel_03_lowPtLep")->Fill(muo1.iso_rel_03(),weight);
+        hist<TH1F>("muo_iso_rel_03_charged_lowPtLep")->Fill(muo1.iso_rel_03_charged(),weight);
+        hist<TH1F>("muo_iso_tk_lowPtLep")->Fill(muo1.iso_tk(),weight);
+      }
+    }
+  }
+  
   //Correlations Higgs with the two Z bosons
   for(int i=0;i<H_size;i++){
     TLorentzVector bosonH = (*event.reco_H_bosons).at(i);
@@ -235,4 +280,8 @@ void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
     }
   }
   hist<TH1F>("DNN_score")->Fill(event.dnn_output(),weight);
+    // for(size_t i=0;i<iso_variables_labels.size();++i){
+    //   TString label = iso_variables_labels[i];
+    //   hist<TH1F>(label + "_lowPtLep")->Fill(0.0,weight);
+    // }
 }
