@@ -39,10 +39,10 @@ config_per_year = {
 
 
 years = []
-# years.append('UL16preVFP')
-# years.append('UL16postVFP')
+years.append('UL16preVFP')
+years.append('UL16postVFP')
 years.append('UL17')
-#years.append('UL18')
+years.append('UL18')
 stage = 'mini'
 submit = True
 submit = False
@@ -59,7 +59,8 @@ def main():
             Tuplizer = TuplizeRunner(sample=sample, stage=stage, year=year, config=config_per_year[year], workarea=workarea, submit=submit)
             Tuplizer.CountEvents(check_missing=True)
             # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='new')
-            # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='resubmit')
+            # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='resubmit', update_missing=False)
+            # Tuplizer.SubmitTuplize(ncores=1, runtime=(01,00,00), nevt_per_job=nevt_per_job, mode='resubmit', update_missing=True)
             # Tuplizer.CreateDatasetXMLFile(force_counting=True, count_weights=(sample.type=="MC"), ncores=8)
 
 
