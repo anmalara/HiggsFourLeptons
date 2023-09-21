@@ -160,7 +160,7 @@ void HiggsFourLeptonsHists::fill(const HiggsFourLeptonsEvent & event){
     hist<TH1F>("ele"+postfix+"_eta")->Fill(ele.eta(), weight);
     hist<TH1F>("ele"+postfix+"_phi")->Fill(ele.phi(), weight);
 
-     hist<TH1F>("dZ")->Fill(ele.dz(),weight);
+    hist<TH1F>("dZ")->Fill(ele.dz(),weight);
 
     if (i>=1) continue;
     const Electron ele2 = (*event.H_electrons).at(i+1);

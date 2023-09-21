@@ -24,6 +24,7 @@
 
 #include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsDNN.h"
 #include "LEAF/HiggsFourLeptons/include/HiggsFourLeptonsDNNHists.h"
+#include <iostream>
 
 using namespace std;
 
@@ -132,13 +133,13 @@ HiggsFourLeptonsTool::HiggsFourLeptonsTool(const Config & cfg) : BaseTool(cfg){
                           MuonID(muo_id),    
                           MuonIso(muo_iso_rel_03_min,"iso_rel_03"),
                           MuonIso(muo_iso_rel_03_min,"iso_rel_03_charged")};//MuonIso(,"iso_rel_04"),MuonIso(,"iso_tk")
+
   MultiID<Electron> ele_ID = {PtEtaId(ele_pt_min, ele_eta_min), 
                               ElectronDetectorHolesID(), 
                               ElectronDxyID(lep_dxy_min,lep_dxy_max),
                               ElectronDzID(lep_dz_min,lep_dz_max),
                               ElectronID(ele_id),
-                              ElectronIso(ele_iso_rel_03_min,"iso_rel_03"),
-                              ElectronIso(ele_iso_rel_03_min,"iso_rel_03_charged")};
+                              ElectronIso(ele_iso_rel_03_min,"iso_rel_03")};//ElectronIso(ele_iso_rel_03_min,"iso_rel_03_charged")
 
   muo_cleaner.reset(new MuonCleaner(muo_ID));
   ele_cleaner.reset(new ElectronCleaner(ele_ID));
@@ -254,7 +255,7 @@ bool HiggsFourLeptonsTool::Process(){
   }
   for(size_t i=0;i<(*event->reco_H_bosons).size();i++){
     TLorentzVector h = (*event->reco_H_bosons).at(i);
-    if((h.M()>114)&&(h.M()<130)){
+    if((h.M()>120)&&(h.M()<130)){
       fill_histograms("H_m_reco");
     }
     if(h.M()>180){
@@ -266,7 +267,6 @@ bool HiggsFourLeptonsTool::Process(){
   }
   // fill one set of histograms called "nominal", which is necessary for PostAnalyzer scripts
   fill_histograms("nominal");
-
   // store events passing the full selection for the next step
   return true;
 }

@@ -42,7 +42,7 @@ void HiggsFourLeptonsDNNHists::fill(const HiggsFourLeptonsEvent & event){
         hist<TH1F>("eta_cand")->Fill(event.eta->at(i),weight);
         hist<TH1F>("phi_cand")->Fill(event.phi->at(i),weight);
         hist<TH1F>("energy_cand")->Fill(event.energy->at(i),weight);
-
+        
         string type = type2str((int)fabs(event.pdgid->at(i)));
         hist<TH1F>("pdgid_cand")->Fill(type.c_str(), weight);
         hist<TH1F>("charge_cand")->Fill(event.charge->at(i),weight);

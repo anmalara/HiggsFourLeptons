@@ -14,6 +14,7 @@ HiggsFourLeptonsDNN::HiggsFourLeptonsDNN(const Config& cfg) {
 
 bool HiggsFourLeptonsDNN::process(HiggsFourLeptonsEvent& event) {
 
+  bool printing = true;
 
   std::vector<PFCandidate> candidates(0);
 
@@ -103,8 +104,14 @@ bool HiggsFourLeptonsDNN::process(HiggsFourLeptonsEvent& event) {
   vector<vector<float>> outputs = ONNX_inference->run(input_names, input_data, input_shapes);
 
   event.set_dnn_output(outputs[0][0]);
-
- 
+  if(printing){
+    std::cout << "N PF " << event.pfcands->size() << std::endl;
+    cout<<"DNN output "<<outputs[0][0]<<endl;
+    std::cout << std::endl << "output data -> ";
+    for (auto &i: outputs[0]) { std::cout << i << " "; }
+    std::cout << std::endl;
+    cout << candidates.size() << endl;
+  }
   return true;
 
 }

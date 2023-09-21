@@ -49,8 +49,8 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
       }
     }
   }
-  
 
+  
   if (lep_indices.size()<4) return false;
 
   for(size_t i_1=0; i_1<lep_indices.size(); i_1++){
@@ -96,7 +96,6 @@ bool Higgs4LeptonsFinder::process(HiggsFourLeptonsEvent& event) {
           if(is_ele_1==is_ele_3){
             if (Fail_SmartCut(lep_1,lep_2,lep_3,lep_4)) continue;
           }
-
           TLorentzVector h = lep_1.p4()+lep_2.p4()+lep_3.p4()+lep_4.p4();
           float chi2_z1 = fabs(z1.M()-Z_mass_reco)/Z_width_reco;
           float chi2_z2 = fabs(z2.M()-Z_mass_offshell_reco)/Z_width_offshell_reco;
