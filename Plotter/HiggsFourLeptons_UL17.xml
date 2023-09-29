@@ -5,8 +5,8 @@
 <PlotterConfiguration>
 
   <FileConfiguration
-    InputDirectory  = "/pnfs/iihe/cms/store/user/anmalara/Analyses/HiggsFourLeptons/UL17/HiggsFourLeptons/"
-    OutputDirectory = "/pnfs/iihe/cms/store/user/anmalara/Analyses/HiggsFourLeptons/UL17/HiggsFourLeptons/plots/distributions"
+    InputDirectory  = "/pnfs/iihe/cms/store/user/bhonore/Analyses/HiggsFourLeptons/UL17/HiggsFourLeptons/"
+    OutputDirectory = "/pnfs/iihe/cms/store/user/bhonore/Analyses/HiggsFourLeptons/UL17/HiggsFourLeptons/plots/distributions"
     PreFix          = ""
     SEDirector      = ""
   />
@@ -21,11 +21,11 @@
   />
 
   <InputDatasets>
-    <Dataset Name="DY_standard_UL17"   Stack="true"   Color="419"  Linestyle="0"   Legend="DY"      Type="MC" />
     <Dataset Name="VV_standard_UL17"   Stack="true"   Color="861"  Linestyle="0"   Legend="VV"      Type="MC" />
     <Dataset Name="ggH_standard_UL17"  Stack="true"   Color="633"  Linestyle="0"   Legend="H(ggH)"  Type="MC" />
     <Dataset Name="VBF_standard_UL17"  Stack="true"   Color="801"  Linestyle="0"   Legend="H(VBF)"  Type="MC" />
     <Dataset Name="Data_standard_UL17" Stack="false"  Color="1"    Linestyle="0"   Legend="Data"    Type="DATA" />
+    <Dataset Name="DY_standard_UL17"   Stack="true"   Color="419"  Linestyle="0"   Legend="DY"      Type="MC" />
   </InputDatasets>
 
 

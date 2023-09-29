@@ -29,6 +29,9 @@ public:
   std::string eventCategory() const { return m_eventCategory;}
   void set_eventCategory(std::string x) { m_eventCategory = x;}
 
+  float dnn_output() const { return m_dnn_output;}
+  void set_dnn_output(float x) { m_dnn_output = x;}
+
   vector<Muon>* H_muons;
   vector<Electron>* H_electrons;
   vector<FlavorParticle>* H_leptons;
@@ -39,6 +42,18 @@ public:
   vector<float>* Z2_chi2;
   vector<float>* HZZ_chi2;
 
+  vector<float>* pt;
+  vector<float>* eta;
+  vector<float>* phi;
+  vector<float>* energy;
+  vector<float>* pdgid;
+  vector<float>* charge;
+  vector<float>* puppiweight;
+  vector<float>* energy_log;
+  vector<float>* pt_log;
+  vector<float>* mask;
+
 protected:
   std::string m_eventCategory;
+  float m_dnn_output;
 };

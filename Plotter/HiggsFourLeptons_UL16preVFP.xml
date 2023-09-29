@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PlotterConfiguration PUBLIC "" "PlotterConfiguration.dtd"[]>
+
+
+<PlotterConfiguration>
+
+  <FileConfiguration
+    InputDirectory  = "/pnfs/iihe/cms/store/user/bhonore/Analyses/HiggsFourLeptons/UL16preVFP/HiggsFourLeptons/"
+    OutputDirectory = "/pnfs/iihe/cms/store/user/bhonore/Analyses/HiggsFourLeptons/UL16preVFP/HiggsFourLeptons/plots/distributions"
+    PreFix          = ""
+    SEDirector      = ""
+  />
+
+  <PlottingConfiguration
+    lumitext   = "19 fb^{-1} (13 TeV)"
+    blind      = "false"
+    logY       = "false"
+    normalize  = "false"
+    singlePDF  = "false"
+    numerator  = "Data_standard_UL16preVFP"
+  />
+
+  <InputDatasets>
+    <Dataset Name="VV_standard_UL16preVFP"   Stack="true"   Color="861"  Linestyle="0"   Legend="VV"      Type="MC" />
+    <Dataset Name="ggH_standard_UL16preVFP"  Stack="true"   Color="633"  Linestyle="0"   Legend="H(ggH)"  Type="MC" />
+    <Dataset Name="VBF_standard_UL16preVFP"  Stack="true"   Color="801"  Linestyle="0"   Legend="H(VBF)"  Type="MC" />
+    <Dataset Name="Data_standard_UL16preVFP" Stack="false"  Color="1"    Linestyle="0"   Legend="Data"    Type="DATA" />
+    <Dataset Name="DY_standard_UL16preVFP"   Stack="true"   Color="419"  Linestyle="0"   Legend="DY"      Type="MC" />
+  </InputDatasets>
+
+
+
+<!--
+kWhite    0,
+kBlack    1,
+kYellow   400
+kGreen    416
+kCyan     432
+kBlue     600
+kMagenta  616
+kRed      632
+kOrange   800
+kSpring   820
+kTeal     840
+kAzure    860
+kViolet   880
+kPink     900
+kGray     920
+
+-->
+
+
+
+</PlotterConfiguration>
