@@ -1,0 +1,19 @@
+# Simple counting experiment, with one signal and a few background processes
+imax 1  number of channels (Zmass)
+jmax 1  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# we have just one channel, in which we observe 0 events
+bin Zmass_region
+observation 245
+------------
+# now we list the expected events for signal and all backgrounds in that bin
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal
+# then we list the independent sources of uncertainties, and give their effect (syst. error)
+# on each process and bin
+bin             Zmass_region Zmass_region
+process         VV           ggH
+process          1           0
+rate           217.65469     0.74
+------------
+lumi    lnN    1.11     1.11
