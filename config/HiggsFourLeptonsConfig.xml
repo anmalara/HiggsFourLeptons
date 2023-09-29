@@ -22,24 +22,37 @@
     <Dataset Name="EGamma_RunB_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunC_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunD_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunB_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunC_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunD_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunE_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunF_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunG_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleElectron_RunH_standard"  Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunA_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunB_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunC_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunD_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunE_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="SingleMuon_RunF_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleMuon_RunG_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="SingleMuon_RunH_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DoubleMuon_RunA_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DoubleMuon_RunB_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DoubleMuon_RunC_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DoubleMuon_RunD_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DoubleMuon_RunE_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DoubleMuon_RunF_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="DoubleMuon_RunG_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="DoubleMuon_RunH_standard"      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="MuonEG_RunA_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="MuonEG_RunB_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="MuonEG_RunC_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="MuonEG_RunD_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="MuonEG_RunE_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="MuonEG_RunF_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="MuonEG_RunG_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="MuonEG_RunH_standard"          Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
 
 
   </InputDatasets>
