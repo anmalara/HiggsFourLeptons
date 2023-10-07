@@ -204,6 +204,9 @@ def GetDasName(name,sample,year,run):
     if sample=='DoubleMuon' and year=='UL17' and run=='E': name = name.replace('-v1','-v2')
     if sample=='EGamma'     and year=='UL18' and run=='D': name = name.replace('-v1','-v2')
     if sample=='SingleMuon' and year=='UL18' and run=='C': name = name.replace('-v2','-v3')
+    if sample=='DoubleEG' and year=='UL16preVFP' and run=='B-ver2': name = name.replace('-v1','-v3')
+    if sample=='DoubleEG' and year=='UL17' and run=='C': name = name.replace('-v1','-v2')
+    if sample=='DoubleEG' and year=='UL17' and run=='F': name = name.replace('-v1','-v2')
     if year=='UL16preVFP' and 'B-ver' in run: name = name.replace('B-ver1-','B-ver1_').replace('B-ver2-','B-ver2_')
     return name
 
@@ -303,6 +306,28 @@ def Add_Data_DoubleMuon(SampleContainer):
         }
     Add_Data(SampleContainer, sample_name = sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes, transform=GetDasName)
 
+def Add_Data_DoubleEG(SampleContainer):
+    sample_name = 'DoubleEG'
+    nevents_das={
+        'UL16preVFP': {
+            'das':       {'B-ver1':5686987, 'B-ver2':143073268, 'C':47677856, 'D':53324960, 'E':49877710, 'F':30216940},
+            'generated': {'B-ver1':5608682, 'B-ver2':139869264, 'C':47626040, 'D':53302208, 'E':49794640, 'F':30178980},
+                },
+        'UL16postVFP': {
+            'das':        {'F':4360689, 'G':78797031, 'H':85388734},
+            'generated':  {'F':4360689, 'G':78797048, 'H':85388776},
+                },
+        'UL17': {
+            'das':       {'B':58088760, 'C':65181125, 'D':25911432, 'E':56241190, 'F':74265012},
+            'generated': {'B':56544080, 'C':63271272, 'D':25911418, 'E':56241204, 'F':74264976},
+                },
+    }
+    DAS_Names = {
+        'UL16preVFP':   '/DoubleEG/Run2016RUN-HIPM_UL2016_MiniAODv2-v1/MINIAOD',
+        'UL16postVFP':  '/DoubleEG/Run2016RUN-UL2016_MiniAODv2-v1/MINIAOD',
+        'UL17':         '/DoubleEG/Run2017RUN-UL2017_MiniAODv2-v1/MINIAOD',
+        }
+    Add_Data(SampleContainer, sample_name = sample_name, group_name=sample_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes, transform=GetDasName)
 
 def Add_Data_MuonEG(SampleContainer):
     sample_name = 'MuonEG'
@@ -343,4 +368,5 @@ def Add_Samples_H4L(SampleContainer):
     Add_Data_EGamma(SampleContainer)
     Add_Data_SingleMuon(SampleContainer)
     Add_Data_DoubleMuon(SampleContainer)
+    Add_Data_DoubleEG(SampleContainer)
     Add_Data_MuonEG(SampleContainer)
