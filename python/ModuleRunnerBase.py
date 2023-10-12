@@ -50,7 +50,7 @@ class VariablesBase(GenericPath):
             ('VV',   ('MC',   ['ZZTo4L'])),
             ('ggH',  ('MC',   ['GluGluHToZZTo4L_M125'])),
             ('VBF',  ('MC',   ['VBF_HToZZTo4L_M125'])),
-            ('Data', ('DATA', ['EGamma','SingleMuon','DoubleMuon','MuonEG'])),
+            ('Data', ('DATA', ['EGamma','SingleMuon','DoubleMuon','MuonEG','SingleElectron'])),
         ])
     # def defineType(self):
     #     self.groups = OrderedDict()
