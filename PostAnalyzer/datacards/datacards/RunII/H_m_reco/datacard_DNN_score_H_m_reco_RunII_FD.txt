@@ -1,0 +1,21 @@
+imax	 1
+jmax	 3
+kmax	 1
+--------
+shapes	 data_obs	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/H_m_reco/histograms-DNN_score-H_m_reco-Data-RunII-IsSmeared_Staterror.root	DNN_score_H_m_reco_Data_RunII_IsSmeared_Staterror
+shapes	 VV	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/H_m_reco/histograms-DNN_score-H_m_reco-VV-RunII-NotSmeared.root	DNN_score_H_m_reco_VV_RunII_NotSmeared
+shapes	 ggH	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/H_m_reco/histograms-DNN_score-H_m_reco-ggH-RunII-NotSmeared.root	DNN_score_H_m_reco_ggH_RunII_NotSmeared
+shapes	 VBF	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/H_m_reco/histograms-DNN_score-H_m_reco-VBF-RunII-NotSmeared.root	DNN_score_H_m_reco_VBF_RunII_NotSmeared
+shapes	 DY	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/H_m_reco/histograms-DNN_score-H_m_reco-DY-RunII-IsSmeared_Shape.root	DNN_score_H_m_reco_DY_RunII_IsSmeared_Shape
+--------
+bin	 H_m_reco
+observation	 259.0
+--------
+bin	 H_m_reco	H_m_reco	H_m_reco	H_m_reco	
+process	 VV	ggH	VBF	DY	
+process	 1	0	-1	2	
+rate	 50.662	116.293	11.339	65.048	
+--------
+Lumi	 lnN 1.11 1.11 1.11 1.11 
+--------
+alpha	 rateParam H_m_reco VBF 1 [0.0,10] 

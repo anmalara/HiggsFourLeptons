@@ -1,89 +1,144 @@
-import ROOT
-import sys
-import os
+#! /usr/bin/env python
+import ROOT as rt
 import numpy as np
+from collections import OrderedDict
 from ModuleRunnerBase import GenericPath
 from ModuleRunnerBase import VariablesBase
 from tdrstyle_all import *
+from printing_utils import green, blue, prettydict
+import os
 
-ROOT.gROOT.SetBatch(1)
+rt.gROOT.SetBatch(1)
 
 class Smearer(VariablesBase):
-    def __init__(self):
+    def __init__(self,year,simudata,sample,histname,type,region,rebin=1,rootfileSaveLoc='',nameext=''):
         VariablesBase.__init__(self)
         generic = GenericPath()
-        self.year = 'UL18'
+        self.year = year #'UL18'
         self.extension = 'standard'
-        self.sample = 'MC__DYJetsToLL_M-50'
+        self.sample = simudata+'__'+sample#'MC__DYJetsToLL_M-50'
+        self.type = type#'DY'
+        self.region = region#'nominal'
+        self.rebin = rebin
         self.file_path = '/pnfs/iihe/cms/store/user/bhonore/Analyses/HiggsFourLeptons/'+ self.year +'/HiggsFourLeptons/'
         self.path = self.file_path + self.sample + '_' + self.extension + '_' + self.year + '.root'
-        self.histname = 'H_mass'
-        self.save_loc = generic.analysis_path +'/PostAnalyzer/pdfs/Smearing/'
-        self.save_name = 'smeared_' + self.sample + '_' + self.histname + '.pdf'
+        self.histname = histname
+        self.save_loc_pdf = generic.analysis_path +'/PostAnalyzer/pdfs/Smearing/'
+        if(rootfileSaveLoc==''):
+            self.save_loc_root = generic.analysis_path + '/PostAnalyzer/pdfs/Smearing/'
+        elif(rootfileSaveLoc=='datacards'):
+            self.save_loc_root = generic.analysis_path + '/PostAnalyzer/datacards/rootfiles_for_datacards/' + self.year + '/' + self.region
+        else:
+            self.save_loc_root = rootfileSaveLoc
+        if(nameext==''):
+            self.save_name = 'histograms-' + self.histname + '-' + self.region + '-' + self.type + '-' + self.year 
+        else:
+            self.save_name = 'histograms-' + self.histname + '-' + self.region + '-' + self.type + '-' + self.year + '-' + nameext
 
-    def smearing(self,iter=1):
-        c = tdrDiCanvas('SmearingCanvas', 70.0, 170.0, 0.0, 30.0, 0.0, 2.0, 'Smearing', 'Arbitrary units', 'Ratio')
-        tfile = ROOT.TFile(self.path)
-        hist = tfile.Get('nominal_H4l/'+self.histname)
-        # print(self.path)
-        new_hist = ROOT.TH1F('Smeared_'+self.histname,'Title',hist.GetNbinsX(),hist.GetXaxis().GetXmin(),hist.GetXaxis().GetXmax())
-        c.cd(1)
-        binshift = 70
-        hist_ = ROOT.TH1F('Smeared_tmp'+self.histname,'Title_',hist.GetNbinsX(),hist.GetXaxis().GetXmin(),hist.GetXaxis().GetXmax())
-        hist_ = hist.Clone('work_hist')
-        for it in range(iter):
-            negative_entries = 0
-            if(it>0):
-                hist_ = new_hist.Clone('work_hist')#copy current iteration
-                new_hist *= 0 #reset for next iteration
-            for i in range(hist_.GetNbinsX()):
-                print('Bin Number :',i)
-                if(hist_.GetBinContent(i)<=0):
-                    negative_entries += 1
-                else:
-                    binwidth = hist_.GetXaxis().GetBinWidth(i)
-                    # print('--> Bin width : ',hist_.GetXaxis().GetBinWidth(i))
-                    print('--> Bin content : ',hist_.GetBinContent(i))
-                    genNumber = np.random.normal(hist_.GetBinContent(i),np.sqrt(3*binwidth),1)
-                    # print('--> Gen content : ',genNumber)
-                    new_hist.Fill(binshift+i*binwidth,genNumber[0])
-            print('negative entries : ',negative_entries)
-            # print(new_hist.Integral())
-            # print(hist.Integral()-new_hist.Integral())
-
-        #Set poissonian errors
-        for i in range(hist.GetNbinsX()):
-            if(new_hist.GetBinContent(i)>0):
-                new_hist.SetBinError(i,np.sqrt(new_hist.GetBinContent(i)))
-        ratio_hist = ROOT.TH1F('Smeared_ratio_'+self.histname,'Title_ratio',hist.GetNbinsX(),hist.GetXaxis().GetXmin(),hist.GetXaxis().GetXmax())
-        ratio_hist = new_hist.Clone('cloned_hist')
-        ratio_hist.Divide(hist)
-
-        #hist.SetDirectory(0)
-        c.cd(1)
-        legend = tdrLeg(0.6, 0.7, 0.9, 0.9,textSize=0.03)
-        legend.AddEntry(hist,'MC__DYJetsToLL_M-50'+self.histname,'P')
-        legend.AddEntry(new_hist,'Smearing','P')
-        tdrDraw(hist, 'P', mcolor= ROOT.kBlue, fstyle=0)#,fcolor=colors[name]
-        c.cd(1)
-        tdrDraw(new_hist, 'P', mcolor= ROOT.kRed, fstyle=0)#,fcolor=colors[name]
-        c.cd(2)
-        tdrDraw(ratio_hist, 'P', mcolor= ROOT.kBlack, fstyle=0)#,fcolor=colors[name]
-        c.SaveAs(self.save_loc +self.save_name)
+    def smearing(self,process=False,iter=1):
+        #staterror = True -> Shape smearing
+        #staterror = False -> Only add statistical uncertainty
+        if(not os.path.exists(self.path)):
+            print('The file at ',self.path,' does not exist')
+        tfile = rt.TFile(self.path)
+        hist = tfile.Get(self.region+'_H4l/'+self.histname)
+        hist.SetDirectory(0)
         tfile.Close()
+        smeared_hists = OrderedDict([(0, hist.Clone('smear_0'))])
+        nbins = 2
+        for it in range(1,iter+1):
+            np.random.seed(10)
+            old_hist = smeared_hists[it-1]
+            new_hist = old_hist.Clone('smear_'+self.type+'_'+str(it))
+            new_hist.SetDirectory(0)
+            for bin in range(old_hist.GetNbinsX()+1):
+                width = old_hist.GetBinWidth(bin)
+                if(process):
+                    content = old_hist.GetBinContent(bin)  
+                    if content<=0:
+                        bin_content = 0
+                    else:
+                        bin_content = np.random.normal(content,np.sqrt(old_hist.GetBinContent(bin)))
+                else:
+                    # #Neglect boundary bins
+                    # if (bin+nbins>old_hist.GetNbinsX()):
+                    #    bin_content=old_hist.GetBinContent(bin)#/(bin+nbins-old_hist.GetNbinsX()+1)
+                    # elif (bin-nbins<0):
+                    #     bin_content=old_hist.GetBinContent(bin)#/(nbins-bin+1)
+                    #else:
+                        norma = min(bin+nbins,old_hist.GetNbinsX()+1)-max(bin-nbins,0)+1
+                        mean = old_hist.Integral(max(bin-nbins,0),min(bin+nbins,old_hist.GetNbinsX()+1))
+                    # if(bin-nbins)<0:
+                    #     mean += old_hist.Integral(old_hist.GetNbinsX()+bin-nbins,old_hist.GetNbinsX())/norma
+                    # if((bin+nbins)>old_hist.GetNbinsX()):
+                    #     mean += old_hist.Integral(0,bin+nbins-old_hist.GetNbinsX())/norma
+                        bin_content = np.random.normal(mean,np.sqrt(nbins*width))
+                    
+                new_hist.SetBinContent(bin,bin_content)
+            new_hist.Scale(hist.Integral()/new_hist.Integral())
+            for bin in range(new_hist.GetNbinsX()+1):
+                bin_content = new_hist.GetBinContent(bin)
+                err = np.sqrt(bin_content) if bin_content>0 else 0
+                new_hist.SetBinError(bin,err)
+            smeared_hists[it] = new_hist
+            if(process):
+                #Put the only hist at the end
+                smeared_hists[iter] = new_hist
+                break
 
-def main():
-    Smearer().smearing(iter=1)
-if __name__ == '__main__':
-	main()
+        smearprocess = 'Shape'
+        if(process):
+            smearprocess = 'Staterror'
+
+        File = rt.TFile(self.save_loc_root + '/' +self.save_name+'_'+smearprocess+'.root','RECREATE')
+        File.cd()
         
+        smeared_hists[iter].Rebin(self.rebin)
+        smeared_hists[iter].Write(self.histname + '_' + self.region + '_' + self.type + '_' + self.year + '_' + 'IsSmeared_' + smearprocess)
+        print(green('Smeared histogram written at {}'.format(self.save_loc_root + '/' +self.save_name+'_'+smearprocess+'.root')))
+        File.Close()    
 
-#Previous code
-# genEntries = np.random.normal(0,0.5*3*binwidth, int(hist_.GetBinContent(i)))
-# genEntries_int = [int(x) for x in genEntries]
-# weight = hist_.GetBinContent(i)/len(genEntries)
-# print(genEntries_int)
-# if(len(genEntries_int)>0):
-#     for j in range(min(genEntries_int),max(genEntries_int)+1):
-#         if((0<=(i+j))and((i+j)<=hist_.GetNbinsX())):
-#             new_hist.Fill(binshift+(i+j)*binwidth,weight*genEntries_int.count(j))
+        ratio_hists = {}
+        yaxismax = max(smeared_hists[iter].GetMaximum(),hist.GetMaximum())
+        if(self.histname=='H_mass'):
+            xmin = 70.0
+        else:
+            xmin = 0.0
+        #If shape smaering, store the evolution of the smearing
+        if(not process):
+            c = tdrDiCanvas('SmearingCanvas_'+ self.region + self.type +str(iter)+'_'+smearprocess, xmin, 170.0, 0.0,yaxismax + np.sqrt(yaxismax) , 0.0, 2.0, 'Smearing', 'Arbitrary units', 'Ratio')
+            c.cd(1)
+            legend = tdrLeg(0.6, 0.7, 0.9, 0.9,textSize=0.03)
+            tdrDraw(hist, 'P', mcolor= rt.kAzure+2, fstyle=0)
+            legend.AddEntry(hist,'MC__DYJetsToLL_M-50'+self.histname,'P')
+            for ind in range(max(1,iter-1),iter+1):
+                c.cd(1)
+                hist_ = smeared_hists[ind]
+                col = rt.kGreen+2 if iter==ind else rt.kRed+1
+                tdrDraw(hist_, 'P', mcolor= col, fstyle=0)
+                legend.AddEntry(hist_,'Smearing '+str(ind),'P')
+                ratio_hists[ind] = hist_.Clone('ratio_'+str(ind))
+                # ratio_hists[ind].Divide(hist)
+                c.cd(2)
+                tdrDraw(ratio_hists[ind], 'P', mcolor= col, fstyle=0)
+            c.SaveAs(self.save_loc_pdf +self.save_name+"_"+str(iter)+ '_' + smearprocess + '.pdf')
+
+# def main():
+#     smearer = Smearer('UL18','MC','DYJetsToLL_M-50','DY','nominal','datacards')
+#     # smearer.smearing(iter=0)
+#     smearer.smearing(iter=100)
+#     smearer2 = Smearer('UL18','MC','ggH','ggH','H_m_reco','datacards')
+#     smearer2.smearing(iter=50)
+
+#     smearer3 = Smearer('UL18','DATA','Data','Data','nominal','datacards')
+#     smearer3.smearing(iter=50)
+#     # smearer.smearing(iter=2)
+#     # smearer.smearing(iter=5)
+#     # smearer.smearing(iter=10)
+#     # smearer.smearing(iter=20)
+#     # smearer.smearing(iter=50)
+#     # smearer.smearing(iter=100)
+    
+
+# if __name__ == '__main__':
+#     main()

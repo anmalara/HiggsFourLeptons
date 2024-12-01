@@ -1,0 +1,21 @@
+imax	 1
+jmax	 3
+kmax	 1
+--------
+shapes	 data_obs	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL17/H_m_reco/histograms-H_mass-H_m_reco-Data-UL17-IsSmeared_Staterror.root	H_mass_H_m_reco_Data_UL17_IsSmeared_Staterror
+shapes	 VV	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL17/H_m_reco/histograms-H_mass-H_m_reco-VV-UL17-NotSmeared.root	H_mass_H_m_reco_VV_UL17_NotSmeared
+shapes	 ggH	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL17/H_m_reco/histograms-H_mass-H_m_reco-ggH-UL17-NotSmeared.root	H_mass_H_m_reco_ggH_UL17_NotSmeared
+shapes	 VBF	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL17/H_m_reco/histograms-H_mass-H_m_reco-VBF-UL17-NotSmeared.root	H_mass_H_m_reco_VBF_UL17_NotSmeared
+shapes	 DY	H_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL17/H_m_reco/histograms-H_mass-H_m_reco-DY-UL17-IsSmeared_Shape.root	H_mass_H_m_reco_DY_UL17_IsSmeared_Shape
+--------
+bin	 H_m_reco
+observation	 110.0
+--------
+bin	 H_m_reco	H_m_reco	H_m_reco	H_m_reco	
+process	 VV	ggH	VBF	DY	
+process	 1	0	-1	2	
+rate	 20.888	48.106	4.691	15.34	
+--------
+Lumi	 lnN 1.11 1.11 1.11 1.11 
+--------
+alpha	 rateParam H_m_reco VBF 1 [0.3,10] 

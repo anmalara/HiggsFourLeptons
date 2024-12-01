@@ -1,0 +1,21 @@
+imax	 1
+jmax	 3
+kmax	 1
+--------
+shapes	 data_obs	nominal	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL18/nominal/histograms-DNN_score-nominal-Data-UL18-IsSmeared_Staterror.root	DNN_score_nominal_Data_UL18_IsSmeared_Staterror
+shapes	 VV	nominal	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL18/nominal/histograms-DNN_score-nominal-VV-UL18-NotSmeared.root	DNN_score_nominal_VV_UL18_NotSmeared
+shapes	 ggH	nominal	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL18/nominal/histograms-DNN_score-nominal-ggH-UL18-NotSmeared.root	DNN_score_nominal_ggH_UL18_NotSmeared
+shapes	 VBF	nominal	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL18/nominal/histograms-DNN_score-nominal-VBF-UL18-NotSmeared.root	DNN_score_nominal_VBF_UL18_NotSmeared
+shapes	 DY	nominal	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/UL18/nominal/histograms-DNN_score-nominal-DY-UL18-IsSmeared_Shape.root	DNN_score_nominal_DY_UL18_IsSmeared_Shape
+--------
+bin	 nominal
+observation	 2529.0
+--------
+bin	 nominal	nominal	nominal	nominal	
+process	 VV	ggH	VBF	DY	
+process	 1	0	-1	2	
+rate	 1635.549	76.113	7.42	314.986	
+--------
+Lumi	 lnN 1.11 1.11 1.11 1.11 
+--------
+alpha	 rateParam nominal VBF 1 [0.0,10] 
