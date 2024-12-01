@@ -19,6 +19,12 @@
     <Dataset Name="DYJetsToLL_M-50_standard"                 Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DYJetsToLL_M-10to50_standard"             Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="DYJetsToLL_M-10to50_madgraphMLM_standard" Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="ggZZTo4e_standard"                        Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="ggZZTo4mu_standard"                       Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="ggZZTo4tau_standard"                      Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="ggZZTo2e2mu_standard"                     Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="ggZZTo2e2tau_standard"                    Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
+    <Dataset Name="ggZZTo2mu2tau_standard"                   Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunA_standard"                     Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunB_standard"                     Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>
     <Dataset Name="EGamma_RunC_standard"                     Lumi="None" Year="None" Type="None" Group="None"> <InputFile FileName="None"/> </Dataset>

@@ -1,0 +1,17 @@
+imax	 1
+jmax	 0
+kmax	 1
+--------
+shapes	 data_obs	Z_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/Z_m_reco/histograms-H_mass-Z_m_reco-Data-RunII-IsSmeared_Staterror.root	H_mass_Z_m_reco_Data_RunII_IsSmeared_Staterror
+shapes	 VV	Z_m_reco	/ada_mnt/ada/user/bhonore/WorkingArea/CMSSW_10_6_28/src/LEAF/HiggsFourLeptons/PostAnalyzer/datacards/rootfiles_for_datacards/RunII/Z_m_reco/histograms-H_mass-Z_m_reco-VV-RunII-NotSmeared.root	H_mass_Z_m_reco_VV_RunII_NotSmeared
+--------
+bin	 Z_m_reco
+observation	 424.0
+--------
+bin	 Z_m_reco	
+process	 VV	
+process	 1	
+rate	 390.962	
+--------
+Lumi	 lnN 1.11 
+--------

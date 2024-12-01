@@ -109,10 +109,10 @@ def Add_Diboson(SampleContainer):
         'UL18':        '/GluGluToContinToZZTo4e_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL16preVFP':  {'xsecs': -1, 'das':972000, 'generated':972000, 'weighted':972000.0}, #total events, excluding filter efficiency
-        'UL16postVFP': {'xsecs': -1, 'das':992608, 'generated':992608, 'weighted':992608.0}, #total events, excluding filter efficiency
-        'UL17':        {'xsecs': -1, 'das':997000, 'generated':997000, 'weighted':997000.0}, #total events, excluding filter efficiency
-        'UL18':        {'xsecs': -1, 'das':974000, 'generated':974000, 'weighted':974000.0}, #total events, excluding filter efficiency
+        'UL16preVFP':  {'xsecs': 1.59, 'das':972000, 'generated':972000, 'weighted':972000.0}, #total events, excluding filter efficiency
+        'UL16postVFP': {'xsecs': 1.59, 'das':992608, 'generated':992608, 'weighted':992608.0}, #total events, excluding filter efficiency
+        'UL17':        {'xsecs': 1.59, 'das':997000, 'generated':997000, 'weighted':997000.0}, #total events, excluding filter efficiency
+        'UL18':        {'xsecs': 1.59, 'das':974000, 'generated':974000, 'weighted':974000.0}, #total events, excluding filter efficiency
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=group_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -125,10 +125,10 @@ def Add_Diboson(SampleContainer):
         'UL18':        '/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL16preVFP':  {'xsecs': -1, 'das':968675, 'generated':968675, 'weighted':968675.0}, #total events, excluding filter efficiency
-        'UL16postVFP': {'xsecs': -1, 'das':997445, 'generated':997445, 'weighted':997445.0}, #total events, excluding filter efficiency
-        'UL17':        {'xsecs': -1, 'das':975090, 'generated':975090, 'weighted':975090.0}, #total events, excluding filter efficiency
-        'UL18':        {'xsecs': -1, 'das':845232, 'generated':845232, 'weighted':845232.0}, #total events, excluding filter efficiency
+        'UL16preVFP':  {'xsecs': 1.59, 'das':968675, 'generated':968675, 'weighted':968675.0}, #total events, excluding filter efficiency
+        'UL16postVFP': {'xsecs': 1.59, 'das':997445, 'generated':997445, 'weighted':997445.0}, #total events, excluding filter efficiency
+        'UL17':        {'xsecs': 1.59, 'das':975090, 'generated':975090, 'weighted':975090.0}, #total events, excluding filter efficiency
+        'UL18':        {'xsecs': 1.59, 'das':845232, 'generated':845232, 'weighted':845232.0}, #total events, excluding filter efficiency
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=group_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -141,10 +141,10 @@ def Add_Diboson(SampleContainer):
         'UL18':        '/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL16preVFP':  {'xsecs': -1, 'das':497032, 'generated':497032, 'weighted':497032.0}, #total events, excluding filter efficiency
-        'UL16postVFP': {'xsecs': -1, 'das':499183, 'generated':499183, 'weighted':499183.0}, #total events, excluding filter efficiency
-        'UL17':        {'xsecs': -1, 'das':499000, 'generated':499000, 'weighted':499000.0}, #total events, excluding filter efficiency
-        'UL18':        {'xsecs': -1, 'das':493998, 'generated':493998, 'weighted':493998.0}, #total events, excluding filter efficiency
+        'UL16preVFP':  {'xsecs': 1.59, 'das':497032, 'generated':497032, 'weighted':497032.0}, #total events, excluding filter efficiency
+        'UL16postVFP': {'xsecs': 1.59, 'das':499183, 'generated':499183, 'weighted':499183.0}, #total events, excluding filter efficiency
+        'UL17':        {'xsecs': 1.59, 'das':499000, 'generated':499000, 'weighted':499000.0}, #total events, excluding filter efficiency
+        'UL18':        {'xsecs': 1.59, 'das':493998, 'generated':493998, 'weighted':493998.0}, #total events, excluding filter efficiency
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=group_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -157,10 +157,10 @@ def Add_Diboson(SampleContainer):
         'UL18':        '/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL16preVFP':  {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL16postVFP': {'xsecs': -1, 'das':499000, 'generated':499000, 'weighted':499000.0}, #total events, excluding filter efficiency
-        'UL17':        {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL18':        {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL16preVFP':  {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL16postVFP': {'xsecs': 3.59, 'das':499000, 'generated':499000, 'weighted':499000.0}, #total events, excluding filter efficiency
+        'UL17':        {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL18':        {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=group_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -173,10 +173,10 @@ def Add_Diboson(SampleContainer):
         'UL18':        '/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL16preVFP':  {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL16postVFP': {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL17':        {'xsecs': -1, 'das':498000, 'generated':498000, 'weighted':498000.0}, #total events, excluding filter efficiency
-        'UL18':        {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL16preVFP':  {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL16postVFP': {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL17':        {'xsecs': 3.59, 'das':498000, 'generated':498000, 'weighted':498000.0}, #total events, excluding filter efficiency
+        'UL18':        {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=group_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 
@@ -189,10 +189,10 @@ def Add_Diboson(SampleContainer):
         'UL18':        '/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',
         }
     nevents_das={
-        'UL16preVFP':  {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL16postVFP': {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL17':        {'xsecs': -1, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
-        'UL18':        {'xsecs': -1, 'das':496000, 'generated':496000, 'weighted':496000.0}, #total events, excluding filter efficiency
+        'UL16preVFP':  {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL16postVFP': {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL17':        {'xsecs': 3.59, 'das':500000, 'generated':500000, 'weighted':500000.0}, #total events, excluding filter efficiency
+        'UL18':        {'xsecs': 3.59, 'das':496000, 'generated':496000, 'weighted':496000.0}, #total events, excluding filter efficiency
     }
     Add_MC(SampleContainer, sample_name=sample_name, group_name=group_name, nevents_das=nevents_das, DAS_Names=DAS_Names, modes=modes)
 

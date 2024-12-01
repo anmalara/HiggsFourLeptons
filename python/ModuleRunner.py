@@ -103,17 +103,40 @@ class ModuleRunner(VariablesBase):
         parallelize(commands, ncores=4, remove_temp_files=False)
 
     def MergeRunII(self):
+        separate = True
         runII_dir = os.path.join(self.analysis_outpath,'RunII',self.ModuleName)
         ensureDirectory(runII_dir)
         commands = []
         for group, info in self.groups.items():
+            type, samples = info
+            click = False                          
             for sample in samples:
-                type, samples = info
-                # for mode in ['','_standard_RunII']:
                 for mode in ['_standard_RunII']:
-                    new_file = os.path.join(runII_dir,'MC__'+sample+mode+'.root')
-                    command = ['hadd', '-f', new_file]
+                    new_file = os.path.join(runII_dir,type+'__'+sample+mode+'.root')
+                    if separate:
+                        if click==False:
+                            command = ['hadd', '-f', new_file.replace(sample,group)]
+                            # print('merged to',new_file.replace(sample,group))
+                            click=True
+                    else:
+                        ['hadd', '-f', new_file]
                     for year in self.years:
-                        command.append(new_file.replace('RunII',year))
+                        fname = new_file.replace('RunII',year)
+                        if type=='MC':
+                            if os.path.exists(fname):
+                                # print(fname)
+                                command.append(fname)
+                            # else:
+                            #     print('This file does not exist',fname)
+                        else:
+                            for run in self.RunPeriods_Dict[year]:
+                                fname_ = fname.replace(sample,sample+'_Run'+run)                            
+                                if os.path.exists(fname_):
+                                    # print(fname_)
+                                    command.append(fname_)
+                                # else:
+                                #     print('This file does not exist',fname_)
                     commands.append(command)
         parallelize(commands, ncores=4, remove_temp_files=False)
+
+
